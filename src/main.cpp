@@ -22,11 +22,13 @@ int current_matrix_y = 0;
 
 RoboBrain robo_brain;
 
-RoboIRReceiver robo_ir_receiver_(robo_brain, DIGITAL_IO_PIN(7));
+RoboIRReceiver robo_ir_receiver(robo_brain, DIGITAL_IO_PIN(7));
 
 void setup()
 {
   Serial.begin(9600);
+
+  robo_brain.setup();
 
   max_matrix.init();
   max_matrix.setIntensity(0);
@@ -73,49 +75,37 @@ void loop()
   Serial.print(current_matrix_x);
   Serial.print(" y: ");
   Serial.println(current_matrix_y);
+  */
 
-  if (ir_receive.decode(&ir_receiver_results)) {
-    const unsigned long ir_code = ir_receiver_results.value;
+  if (robo_ir_receiver.detect_signal()) {
+    const RoboIRReceiver::IRCode ir_code = robo_ir_receiver.get_ir_code();
     Serial.print("IR code: ");
     Serial.println(ir_code);
 
-    unsigned long ir_code_to_consider = 0;
-
-    if(ir_code == IR_CODE_HOLDING) {
-      ir_code_to_consider = last_ir_code;
-    }
-    else {
-      ir_code_to_consider = ir_code;
-      last_ir_code = ir_code;
-    }
-
-    Serial.print("IR code to consider: ");
-    Serial.println(ir_code_to_consider);
-
-    switch(ir_code_to_consider) {
-      case IR_CODE_LEFT:
-        move_x(-1);
-        break;
-      case IR_CODE_RIGHT:
-        move_x(1);
-        break;
-      case IR_CODE_UP:
-        move_y(-1);
-        break;
-      case IR_CODE_DOWN:
-        move_y(1);
-        break;
-      default:
-        move_x(1);
-        break;
-    }
-    ir_receive.resume();
+    // switch(ir_code_to_consider) {
+    //   case IR_CODE_LEFT:
+    //     // move_x(-1);
+    //     break;
+    //   case IR_CODE_RIGHT:
+    //     // move_x(1);
+    //     break;
+    //   case IR_CODE_UP:
+    //     // move_y(-1);
+    //     break;
+    //   case IR_CODE_DOWN:
+    //     // move_y(1);
+    //     break;
+    //   default:
+    //     // move_x(1);
+    //     break;
+    // }
+    robo_ir_receiver.resume();
   }
   else {
     // move_x(-1);
   }
 
-  max_matrix.setDot(current_matrix_x, current_matrix_y, 1);
-*/
+  //max_matrix.setDot(current_matrix_x, current_matrix_y, 1);
+
   delay(500);
 }
