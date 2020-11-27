@@ -8,6 +8,7 @@
 #include <Arduino.h>
 #include <Helpers.h>
 #include <MaxMatrix.h>
+#include <RoboBrain.h>
 #include <RoboIRReceiver.h>
 
 const int MAX_MATRICIES_ON_BOARD = 2;
