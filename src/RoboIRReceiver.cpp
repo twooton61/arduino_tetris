@@ -5,7 +5,7 @@
 #include <RoboIRReceiver.h>
 
 RoboIRReceiver::RoboIRReceiver(RoboBrain& robo_brain, const int pin) :
-    AbstractRoboPart(robo_brain),
+    AbstractRoboPart(robo_brain, "IR Receiver"),
     m_pin(pin),
     m_ir_receiver(pin)
 {
@@ -64,7 +64,7 @@ boolean RoboIRReceiver::right_pressed() {
 
 boolean RoboIRReceiver::up_pressed() {
     switch(get_ir_code()) {
-        case 16718055:
+        case 16718055UL:
             Serial.println("up pressed");
             return true;
             break;
@@ -75,7 +75,7 @@ boolean RoboIRReceiver::up_pressed() {
 
 boolean RoboIRReceiver::down_pressed() {
     switch(get_ir_code()) {
-        case 16730805:
+        case 16730805UL:
             Serial.println("down pressed");
             return true;
             break;

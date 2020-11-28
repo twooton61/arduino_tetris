@@ -48,8 +48,9 @@ void RoboBrain::add_part(AbstractRoboPart* robo_part) {
 void RoboBrain::setup() {
     AbstractRoboPartNode* current_node = m_first_part_added_node;
     while(current_node != NULL) {
-        Serial.println(String("setting up robo part"));
-        current_node->get_robo_part()->setup();
+        AbstractRoboPart* robo_part = current_node->get_robo_part();
+        Serial.println(String("setting up robo part: ") + robo_part->name());
+        robo_part->setup();
         current_node = current_node->get_next_node();
     }
 }

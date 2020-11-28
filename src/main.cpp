@@ -14,6 +14,7 @@
 RoboBrain robo_brain;
 
 const int max_matricies_on_board = 2;
+
 RoboMatrix robo_matrix(robo_brain, DIGITAL_IO_PIN(11), DIGITAL_IO_PIN(10), DIGITAL_IO_PIN(13), max_matricies_on_board);
 
 RoboIRReceiver robo_ir_receiver(robo_brain, DIGITAL_IO_PIN(7));

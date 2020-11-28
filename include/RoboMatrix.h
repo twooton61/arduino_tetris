@@ -21,7 +21,7 @@ class RoboMatrix : AbstractRoboPart {
     public:
 
     RoboMatrix(RoboBrain& robo_brain, const int din_pin, const int cs_load_pin, const int clk_pin, const int matricies_on_board) :
-        AbstractRoboPart(robo_brain),
+        AbstractRoboPart(robo_brain, "Max Matrix"),
         m_din_pin(din_pin),
         m_cs_load_pin(cs_load_pin),
         m_clk_pin(clk_pin),
@@ -30,7 +30,6 @@ class RoboMatrix : AbstractRoboPart {
         m_max_cols(DIM * matricies_on_board),
         m_max_matrix(din_pin, cs_load_pin, clk_pin, matricies_on_board)
     {
-        robo_brain.add_part(this);
     }
 
     inline void setup() override {

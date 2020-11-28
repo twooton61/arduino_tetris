@@ -6,7 +6,13 @@ class RoboBrain;
 class AbstractRoboPart {
     public:
 
-    AbstractRoboPart(RoboBrain& robo_brain);
+    const String m_part_name;
+
+    AbstractRoboPart(RoboBrain& robo_brain, const String part_name);
+
+    inline String name() {
+        return m_part_name;
+    }
 
     virtual void setup() = 0;
 };
