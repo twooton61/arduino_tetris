@@ -4,11 +4,11 @@
 #include <AbstractRoboPart.h>
 
 class AbstractRoboPartNode {
-    AbstractRoboPart* m_robo_part;
+    AbstractRoboPart& m_robo_part;
     AbstractRoboPartNode* m_next_node;
 
     public:
-    explicit AbstractRoboPartNode(AbstractRoboPart* robo_part) :
+    explicit AbstractRoboPartNode(AbstractRoboPart& robo_part) :
         m_robo_part(robo_part),
         m_next_node(NULL)
     {
@@ -22,7 +22,7 @@ class AbstractRoboPartNode {
         return m_next_node;
     }
 
-    inline AbstractRoboPart* get_robo_part() {
+    inline AbstractRoboPart& get_robo_part() {
         return m_robo_part;
     }
 };
@@ -32,7 +32,7 @@ RoboBrain::RoboBrain() :
 {
 }
 
-void RoboBrain::add_part(AbstractRoboPart* robo_part) {
+void RoboBrain::add_part(AbstractRoboPart& robo_part) {
     AbstractRoboPartNode* new_part_node = new AbstractRoboPartNode(robo_part);
 
     if(m_first_part_added_node == NULL) {
@@ -48,9 +48,9 @@ void RoboBrain::add_part(AbstractRoboPart* robo_part) {
 void RoboBrain::setup() {
     AbstractRoboPartNode* current_node = m_first_part_added_node;
     while(current_node != NULL) {
-        AbstractRoboPart* robo_part = current_node->get_robo_part();
-        Serial.println(String("setting up robo part: ") + robo_part->name());
-        robo_part->setup();
+        AbstractRoboPart& robo_part = current_node->get_robo_part();
+        Serial.println(String("setting up robo part: ") + robo_part.name());
+        robo_part.setup();
         current_node = current_node->get_next_node();
     }
 }

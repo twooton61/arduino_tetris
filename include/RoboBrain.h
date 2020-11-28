@@ -14,7 +14,7 @@ class RoboBrain {
 
     RoboBrain();
 
-    void add_part(AbstractRoboPart* robo_part);
+    void add_part(AbstractRoboPart& robo_part);
 
     void setup();
 };
