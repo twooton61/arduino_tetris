@@ -40,7 +40,7 @@ class RoboMatrix : AbstractRoboPart {
 
 
     inline void clear_current() {
-        m_max_matrix.setDot(current_matrix_x, current_matrix_y, 0);
+        //m_max_matrix.setDot(current_matrix_x, current_matrix_y, 0);
     }
 
     inline void move_x(const int movement)
@@ -55,6 +55,9 @@ class RoboMatrix : AbstractRoboPart {
             new_x = m_max_cols-1;
         }
 
+        Serial.print("x: ");
+        Serial.println(new_x);
+
         current_matrix_x = new_x;
 
         render();
@@ -68,16 +71,17 @@ class RoboMatrix : AbstractRoboPart {
         if(new_y < 0) {
             new_y = 0;
         }
-        else if(new_y >= m_max_cols) {
-            new_y = m_max_cols-1;
+        else if(new_y >= m_max_rows){
+            new_y = m_max_rows-1;
         }
+
+        Serial.print("y: ");
+        Serial.println(new_y);
 
         current_matrix_y = new_y;
 
         render();
     }
-
-    private:
 
     inline void render()
     {

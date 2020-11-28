@@ -23,32 +23,26 @@ void setup()
   Serial.begin(9600);
 
   robo_brain.setup();
+
+  robo_matrix.render();
 }
 
 void loop()
 {
   if (robo_ir_receiver.detect_signal()) {
-    const RoboIRReceiver::IRCode ir_code = robo_ir_receiver.get_ir_code();
-    Serial.print("IR code: ");
-    Serial.println(ir_code);
-
-    switch(ir_code) {
-      case RoboIRReceiver::IR_CODE_LEFT:
-        robo_matrix.move_x(-1);
-        break;
-      case RoboIRReceiver::IR_CODE_RIGHT:
-        robo_matrix.move_x(1);
-        break;
-      case RoboIRReceiver::IR_CODE_UP:
-        robo_matrix.move_y(-1);
-        break;
-      case RoboIRReceiver::IR_CODE_DOWN:
-        robo_matrix.move_y(1);
-        break;
-      default:
-        robo_matrix.move_x(1);
-        break;
+    if(robo_ir_receiver.left_pressed()) {
+      robo_matrix.move_x(-1);
     }
+    if(robo_ir_receiver.right_pressed()) {
+      robo_matrix.move_x(1);
+    }
+    if(robo_ir_receiver.down_pressed()) {
+      robo_matrix.move_y(1);
+    }
+    if(robo_ir_receiver.up_pressed()) {
+      robo_matrix.move_y(-1);
+    }
+
     robo_ir_receiver.resume();
   }
 

@@ -17,7 +17,7 @@ class RoboIRReceiver : AbstractRoboPart {
 
     public:
 
-    static const IRCode IR_CODE_LEFT = 16716015;
+    static const IRCode IR_CODE_LEFT = 2351064443;
     static const IRCode IR_CODE_RIGHT = 16734885;
     static const IRCode IR_CODE_DOWN = 16730805;
     static const IRCode IR_CODE_UP = 16718055;
@@ -30,6 +30,11 @@ class RoboIRReceiver : AbstractRoboPart {
     bool detect_signal();
 
     IRCode get_ir_code();
+
+    boolean left_pressed();
+    boolean right_pressed();
+    boolean up_pressed();
+    boolean down_pressed();
 
     void resume();
 };

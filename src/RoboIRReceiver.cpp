@@ -31,7 +31,57 @@ RoboIRReceiver::IRCode RoboIRReceiver::get_ir_code() {
         m_last_ir_code = ir_code;
     }
 
+    Serial.print("IR code: ");
+    Serial.print(ir_code);
+    Serial.print(" IR to consider: ");
+    Serial.println(ir_code_to_consider);
+
     return ir_code_to_consider;
+}
+
+boolean RoboIRReceiver::left_pressed() {
+    switch(get_ir_code()) {
+        case 2351064443UL:
+        case 16716015UL:
+            Serial.println("left pressed");
+            return true;
+            break;
+    }
+
+    return false;
+}
+
+boolean RoboIRReceiver::right_pressed() {
+    switch(get_ir_code()) {
+        case 16734885UL:
+            Serial.println("right pressed");
+            return true;
+            break;
+    }
+
+    return false;
+}
+
+boolean RoboIRReceiver::up_pressed() {
+    switch(get_ir_code()) {
+        case 16718055:
+            Serial.println("up pressed");
+            return true;
+            break;
+    }
+
+    return false;
+}
+
+boolean RoboIRReceiver::down_pressed() {
+    switch(get_ir_code()) {
+        case 16730805:
+            Serial.println("down pressed");
+            return true;
+            break;
+    }
+
+    return false;
 }
 
 void RoboIRReceiver::resume() {
