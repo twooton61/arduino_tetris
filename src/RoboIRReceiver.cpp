@@ -1,6 +1,3 @@
-#ifndef ROBO_IR_RECEIVER_H
-#define ROBO_IR_RECEIVER_H
-
 #include <Arduino.h>
 #include <RoboIRReceiver.h>
 
@@ -87,5 +84,3 @@ boolean RoboIRReceiver::down_pressed() {
 void RoboIRReceiver::resume() {
     m_ir_receiver.resume();
 }
-
-#endif
