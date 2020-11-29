@@ -15,7 +15,13 @@ RoboBrain robo_brain;
 
 const int max_matricies_on_board = 2;
 
-RoboMatrix robo_matrix(robo_brain, DIGITAL_IO_PIN(11), DIGITAL_IO_PIN(10), DIGITAL_IO_PIN(13), max_matricies_on_board);
+RoboMatrix robo_matrix(
+  robo_brain,
+  DIGITAL_IO_PIN(11),
+  DIGITAL_IO_PIN(10),
+  DIGITAL_IO_PIN(13),
+  max_matricies_on_board
+);
 
 RoboIRReceiver robo_ir_receiver(robo_brain, DIGITAL_IO_PIN(7));
 
@@ -31,16 +37,16 @@ void setup()
 void loop()
 {
   if (robo_ir_receiver.detect_signal()) {
-    if(robo_ir_receiver.left_pressed()) {
+    if (robo_ir_receiver.left_pressed()) {
       robo_matrix.move_x(-1);
     }
-    if(robo_ir_receiver.right_pressed()) {
+    if (robo_ir_receiver.right_pressed()) {
       robo_matrix.move_x(1);
     }
-    if(robo_ir_receiver.down_pressed()) {
+    if (robo_ir_receiver.down_pressed()) {
       robo_matrix.move_y(1);
     }
-    if(robo_ir_receiver.up_pressed()) {
+    if (robo_ir_receiver.up_pressed()) {
       robo_matrix.move_y(-1);
     }
 

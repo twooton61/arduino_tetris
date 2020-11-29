@@ -20,7 +20,7 @@ RoboIRReceiver::IRCode RoboIRReceiver::get_ir_code() {
     IRCode ir_code = m_ir_receiver_results.value;
     IRCode ir_code_to_consider = 0;
 
-    if(ir_code == RoboIRReceiver::IR_CODE_HOLDING) {
+    if (ir_code == RoboIRReceiver::IR_CODE_HOLDING) {
         ir_code_to_consider = m_last_ir_code;
     }
     else {
@@ -37,7 +37,7 @@ RoboIRReceiver::IRCode RoboIRReceiver::get_ir_code() {
 }
 
 boolean RoboIRReceiver::left_pressed() {
-    switch(get_ir_code()) {
+    switch (get_ir_code()) {
         case 2351064443UL:
         case 16716015UL:
             Serial.println("left pressed");
@@ -49,7 +49,7 @@ boolean RoboIRReceiver::left_pressed() {
 }
 
 boolean RoboIRReceiver::right_pressed() {
-    switch(get_ir_code()) {
+    switch (get_ir_code()) {
         case 16734885UL:
             Serial.println("right pressed");
             return true;
@@ -60,7 +60,7 @@ boolean RoboIRReceiver::right_pressed() {
 }
 
 boolean RoboIRReceiver::up_pressed() {
-    switch(get_ir_code()) {
+    switch (get_ir_code()) {
         case 16718055UL:
             Serial.println("up pressed");
             return true;
@@ -71,7 +71,7 @@ boolean RoboIRReceiver::up_pressed() {
 }
 
 boolean RoboIRReceiver::down_pressed() {
-    switch(get_ir_code()) {
+    switch (get_ir_code()) {
         case 16730805UL:
             Serial.println("down pressed");
             return true;

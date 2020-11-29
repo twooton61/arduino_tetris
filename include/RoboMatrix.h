@@ -19,10 +19,9 @@ class RoboMatrix : AbstractRoboPart {
     int current_matrix_y = 0;
 
     public:
-
     RoboMatrix(RoboBrain& robo_brain, const int din_pin, const int cs_load_pin, const int clk_pin, const int matricies_on_board);
 
-    void setup();
+    void setup() override;
     void clear_current();
     void move_x(const int movement);
     void move_y(const int movement);

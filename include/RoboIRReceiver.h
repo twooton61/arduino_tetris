@@ -6,21 +6,8 @@
 #include <IRremote.h>
 
 class RoboIRReceiver : AbstractRoboPart {
-    public:
+ public:
     typedef unsigned long IRCode;
-
-    private:
-    const int m_pin = 0;
-    IRrecv m_ir_receiver;
-    decode_results m_ir_receiver_results;
-    IRCode m_last_ir_code = 0;
-
-    public:
-
-    static const IRCode IR_CODE_LEFT = 2351064443;
-    static const IRCode IR_CODE_RIGHT = 16734885;
-    static const IRCode IR_CODE_DOWN = 16730805;
-    static const IRCode IR_CODE_UP = 16718055;
     static const IRCode IR_CODE_HOLDING = 4294967295;
 
     RoboIRReceiver(RoboBrain& robo_brain, const int pin);
@@ -37,6 +24,12 @@ class RoboIRReceiver : AbstractRoboPart {
     boolean down_pressed();
 
     void resume();
+
+ private:
+    const int m_pin = 0;
+    IRrecv m_ir_receiver;
+    decode_results m_ir_receiver_results;
+    IRCode m_last_ir_code = 0;
 };
 
 #endif

@@ -20,7 +20,7 @@ void RoboMatrix::setup() {
 
 
 void RoboMatrix::clear_current() {
-    //m_max_matrix.setDot(current_matrix_x, current_matrix_y, 0);
+    m_max_matrix.setDot(current_matrix_x, current_matrix_y, 0);
 }
 
 void RoboMatrix::move_x(const int movement)
@@ -28,10 +28,10 @@ void RoboMatrix::move_x(const int movement)
     clear_current();
 
     int new_x = (current_matrix_x + movement);
-    if(new_x < 0) {
+    if (new_x < 0) {
         new_x = 0;
     }
-    else if(new_x >= m_max_cols) {
+    else if (new_x >= m_max_cols) {
         new_x = m_max_cols-1;
     }
 
@@ -48,10 +48,10 @@ void RoboMatrix::move_y(const int movement)
     clear_current();
 
     int new_y = (current_matrix_y + movement);
-    if(new_y < 0) {
+    if (new_y < 0) {
         new_y = 0;
     }
-    else if(new_y >= m_max_rows){
+    else if (new_y >= m_max_rows) {
         new_y = m_max_rows-1;
     }
 
