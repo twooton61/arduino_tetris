@@ -1,26 +1,27 @@
 #include <Arduino.h>
-#include <RoboIRReceiver.h>
+#include <Robo/IRReceiver.h>
 
-RoboIRReceiver::RoboIRReceiver(RoboBrain& robo_brain, const int pin) :
-    AbstractRoboPart(robo_brain, "IR Receiver"),
+namespace Robo {
+IRReceiver::IRReceiver(Brain& robo_brain, const int pin) :
+    Robo::AbstractPart(robo_brain, "IR Receiver"),
     m_pin(pin),
     m_ir_receiver(pin)
 {
 }
 
-void RoboIRReceiver::setup() {
+void IRReceiver::setup() {
     m_ir_receiver.enableIRIn();
 }
 
-bool RoboIRReceiver::detect_signal() {
+bool IRReceiver::detect_signal() {
     return m_ir_receiver.decode(&m_ir_receiver_results);
 }
 
-RoboIRReceiver::IRCode RoboIRReceiver::get_ir_code() {
-    IRCode ir_code = m_ir_receiver_results.value;
-    IRCode ir_code_to_consider = 0;
+unsigned long IRReceiver::get_ir_code() {
+    unsigned long ir_code = m_ir_receiver_results.value;
+    unsigned long ir_code_to_consider = 0;
 
-    if (ir_code == RoboIRReceiver::IR_CODE_HOLDING) {
+    if (ir_code == Robo::IRReceiver::IR_CODE_HOLDING) {
         ir_code_to_consider = m_last_ir_code;
     }
     else {
@@ -36,7 +37,7 @@ RoboIRReceiver::IRCode RoboIRReceiver::get_ir_code() {
     return ir_code_to_consider;
 }
 
-boolean RoboIRReceiver::left_pressed() {
+boolean IRReceiver::left_pressed() {
     switch (get_ir_code()) {
         case 2351064443UL:
         case 16716015UL:
@@ -48,7 +49,7 @@ boolean RoboIRReceiver::left_pressed() {
     return false;
 }
 
-boolean RoboIRReceiver::right_pressed() {
+boolean IRReceiver::right_pressed() {
     switch (get_ir_code()) {
         case 16734885UL:
             Serial.println("right pressed");
@@ -59,7 +60,7 @@ boolean RoboIRReceiver::right_pressed() {
     return false;
 }
 
-boolean RoboIRReceiver::up_pressed() {
+boolean IRReceiver::up_pressed() {
     switch (get_ir_code()) {
         case 16718055UL:
             Serial.println("up pressed");
@@ -70,7 +71,7 @@ boolean RoboIRReceiver::up_pressed() {
     return false;
 }
 
-boolean RoboIRReceiver::down_pressed() {
+boolean IRReceiver::down_pressed() {
     switch (get_ir_code()) {
         case 16730805UL:
             Serial.println("down pressed");
@@ -81,6 +82,7 @@ boolean RoboIRReceiver::down_pressed() {
     return false;
 }
 
-void RoboIRReceiver::resume() {
+void IRReceiver::resume() {
     m_ir_receiver.resume();
 }
+}  // namespace Robo

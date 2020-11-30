@@ -1,11 +1,12 @@
-#ifndef ROBO_MATRIX_H
-#define ROBO_MATRIX_H
+#ifndef ROBO_MATRIX_H_
+#define ROBO_MATRIX_H_
 
 #include <Arduino.h>
 #include <MaxMatrix.h>
-#include <AbstractRoboPart.h>
+#include <Robo/AbstractPart.h>
 
-class RoboMatrix : AbstractRoboPart {
+namespace Robo {
+class Matrix : Robo::AbstractPart {
     static const int DIM = 8;
     const int m_din_pin;
     const int m_cs_load_pin;
@@ -19,7 +20,8 @@ class RoboMatrix : AbstractRoboPart {
     int current_matrix_y = 0;
 
     public:
-    RoboMatrix(RoboBrain& robo_brain, const int din_pin, const int cs_load_pin, const int clk_pin, const int matricies_on_board);
+
+    Matrix(Brain& robo_brain, const int din_pin, const int cs_load_pin, const int clk_pin, const int matricies_on_board);
 
     void setup() override;
     void clear_current();
@@ -27,5 +29,6 @@ class RoboMatrix : AbstractRoboPart {
     void move_y(const int movement);
     void render();
 };
+}  // namespace Robo
 
-#endif
+#endif  // ROBO_MATRIX_H_

@@ -1,39 +1,39 @@
-#include <RoboBrain.h>
+#include <Robo/Brain.h>
 #include <Arduino.h>
+#include <Robo/AbstractPart.h>
 
-#include <AbstractRoboPart.h>
-
-class AbstractRoboPartNode {
-    AbstractRoboPart& m_robo_part;
-    AbstractRoboPartNode* m_next_node;
+namespace Robo {
+class AbstractPartNode {
+    AbstractPart& m_robo_part;
+    AbstractPartNode* m_next_node;
 
     public:
-    explicit AbstractRoboPartNode(AbstractRoboPart& robo_part) :
+    explicit AbstractPartNode(AbstractPart& robo_part) :
         m_robo_part(robo_part),
         m_next_node(NULL)
     {
     }
 
-    inline void set_next_node(AbstractRoboPartNode* next_node) {
+    inline void set_next_node(AbstractPartNode* next_node) {
         m_next_node = next_node;
     }
 
-    inline AbstractRoboPartNode* get_next_node() {
+    inline AbstractPartNode* get_next_node() {
         return m_next_node;
     }
 
-    inline AbstractRoboPart& get_robo_part() {
+    inline AbstractPart& get_robo_part() {
         return m_robo_part;
     }
 };
 
-RoboBrain::RoboBrain() :
+Brain::Brain() :
     m_last_part_added_node(NULL)
 {
 }
 
-void RoboBrain::add_part(AbstractRoboPart& robo_part) {
-    AbstractRoboPartNode* new_part_node = new AbstractRoboPartNode(robo_part);
+void Brain::add_part(AbstractPart& robo_part) {
+    Robo::AbstractPartNode* new_part_node = new Robo::AbstractPartNode(robo_part);
 
     if (m_first_part_added_node == NULL) {
         m_first_part_added_node = new_part_node;
@@ -45,12 +45,13 @@ void RoboBrain::add_part(AbstractRoboPart& robo_part) {
     }
 }
 
-void RoboBrain::setup() {
-    AbstractRoboPartNode* current_node = m_first_part_added_node;
+void Brain::setup() {
+    Robo::AbstractPartNode* current_node = m_first_part_added_node;
     while (current_node != NULL) {
-        AbstractRoboPart& robo_part = current_node->get_robo_part();
+        Robo::AbstractPart& robo_part = current_node->get_robo_part();
         Serial.println(String("setting up robo part: ") + robo_part.name());
         robo_part.setup();
         current_node = current_node->get_next_node();
     }
 }
+}  // namespace Robo

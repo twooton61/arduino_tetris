@@ -1,8 +1,8 @@
 #include <Arduino.h>
-#include <RoboMatrix.h>
-
-RoboMatrix::RoboMatrix(RoboBrain& robo_brain, const int din_pin, const int cs_load_pin, const int clk_pin, const int matricies_on_board) :
-    AbstractRoboPart(robo_brain, "Max Matrix"),
+#include <Robo/Matrix.h>
+namespace Robo {
+Matrix::Matrix(Brain& robo_brain, const int din_pin, const int cs_load_pin, const int clk_pin, const int matricies_on_board) :
+    Robo::AbstractPart(robo_brain, "Max Matrix"),
     m_din_pin(din_pin),
     m_cs_load_pin(cs_load_pin),
     m_clk_pin(clk_pin),
@@ -13,17 +13,17 @@ RoboMatrix::RoboMatrix(RoboBrain& robo_brain, const int din_pin, const int cs_lo
 {
 }
 
-void RoboMatrix::setup() {
+void Matrix::setup() {
     m_max_matrix.init();
     m_max_matrix.setIntensity(0);
 }
 
 
-void RoboMatrix::clear_current() {
+void Matrix::clear_current() {
     m_max_matrix.setDot(current_matrix_x, current_matrix_y, 0);
 }
 
-void RoboMatrix::move_x(const int movement)
+void Matrix::move_x(const int movement)
 {
     clear_current();
 
@@ -43,7 +43,7 @@ void RoboMatrix::move_x(const int movement)
     render();
 }
 
-void RoboMatrix::move_y(const int movement)
+void Matrix::move_y(const int movement)
 {
     clear_current();
 
@@ -63,7 +63,8 @@ void RoboMatrix::move_y(const int movement)
     render();
 }
 
-void RoboMatrix::render()
+void Matrix::render()
 {
     m_max_matrix.setDot(current_matrix_x, current_matrix_y, 1);
+}
 }

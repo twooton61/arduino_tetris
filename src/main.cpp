@@ -7,15 +7,15 @@
 
 #include <Arduino.h>
 #include <Helpers.h>
-#include <RoboBrain.h>
-#include <RoboMatrix.h>
-#include <RoboIRReceiver.h>
+#include <Robo/Brain.h>
+#include <Robo/Matrix.h>
+#include <Robo/IRReceiver.h>
 
-RoboBrain robo_brain;
+Robo::Brain robo_brain;
 
 const int max_matricies_on_board = 2;
 
-RoboMatrix robo_matrix(
+Robo::Matrix robo_matrix(
   robo_brain,
   DIGITAL_IO_PIN(11),
   DIGITAL_IO_PIN(10),
@@ -23,7 +23,7 @@ RoboMatrix robo_matrix(
   max_matricies_on_board
 );
 
-RoboIRReceiver robo_ir_receiver(robo_brain, DIGITAL_IO_PIN(7));
+Robo::IRReceiver robo_ir_receiver(robo_brain, DIGITAL_IO_PIN(7));
 
 void setup()
 {
