@@ -6,18 +6,20 @@
 #include <IRremote.h>
 
 namespace Robo {
-class IRReceiver : Robo::AbstractPart {
- public:
-    static const unsigned long IR_CODE_HOLDING = 4294967295;
+class IRReceiver : AbstractPart {
+    public:
+    typedef unsigned long IRCode;
 
-    IRReceiver(Robo::Brain& robo_brain, const int pin);
+
+
+    IRReceiver(Brain& robo_brain, const int pin);
 
     void setup() override;
 
     bool detect_signal();
 
-    unsigned long get_ir_code();
-
+    IRCode get_ir_code();
+    boolean is_holding();
     boolean left_pressed();
     boolean right_pressed();
     boolean up_pressed();
@@ -25,11 +27,12 @@ class IRReceiver : Robo::AbstractPart {
 
     void resume();
 
- private:
+    private:
+
     const int m_pin = 0;
     IRrecv m_ir_receiver;
     decode_results m_ir_receiver_results;
-    unsigned long m_last_ir_code = 0;
+    IRCode m_last_ir_code = 0;
 };
 }  // namespace Robo
 

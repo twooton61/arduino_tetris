@@ -3,7 +3,7 @@
 
 namespace Robo {
 IRReceiver::IRReceiver(Brain& robo_brain, const int pin) :
-    Robo::AbstractPart(robo_brain, "IR Receiver"),
+    AbstractPart(robo_brain, "IR Receiver"),
     m_pin(pin),
     m_ir_receiver(pin)
 {
@@ -17,11 +17,11 @@ bool IRReceiver::detect_signal() {
     return m_ir_receiver.decode(&m_ir_receiver_results);
 }
 
-unsigned long IRReceiver::get_ir_code() {
-    unsigned long ir_code = m_ir_receiver_results.value;
-    unsigned long ir_code_to_consider = 0;
+IRReceiver::IRCode IRReceiver::get_ir_code() {
+    IRCode ir_code = m_ir_receiver_results.value;
+    IRCode ir_code_to_consider = 0;
 
-    if (ir_code == Robo::IRReceiver::IR_CODE_HOLDING) {
+    if (is_holding()) {
         ir_code_to_consider = m_last_ir_code;
     }
     else {
@@ -36,6 +36,11 @@ unsigned long IRReceiver::get_ir_code() {
 
     return ir_code_to_consider;
 }
+
+boolean IRReceiver::is_holding() {
+    return get_ir_code() == 4294967295;
+}
+
 
 boolean IRReceiver::left_pressed() {
     switch (get_ir_code()) {

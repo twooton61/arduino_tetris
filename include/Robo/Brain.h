@@ -8,9 +8,6 @@ class AbstractPartNode;
 class AbstractPart;
 
 class Brain {
-    Robo::AbstractPartNode* m_first_part_added_node = NULL;
-    Robo::AbstractPartNode* m_last_part_added_node = NULL;
-
     public:
 
     Brain();
@@ -18,6 +15,11 @@ class Brain {
     void add_part(AbstractPart& robo_part);
 
     void setup();
+
+    private:
+
+    AbstractPartNode* m_first_part_added_node = NULL;
+    AbstractPartNode* m_last_part_added_node = NULL;
 };
 }  // namespace Robo
 

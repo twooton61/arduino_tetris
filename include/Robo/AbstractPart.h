@@ -8,15 +8,17 @@ namespace Robo {
 class AbstractPart {
     public:
 
-    const String m_part_name;
-
-    AbstractPart(Robo::Brain& robo_brain, const String part_name);
+    AbstractPart(Brain& robo_brain, const String part_name);
 
     inline String name() {
         return m_part_name;
     }
 
     virtual void setup() = 0;
+
+    private:
+
+    const String m_part_name;
 };
 }  // namespace Robo
 

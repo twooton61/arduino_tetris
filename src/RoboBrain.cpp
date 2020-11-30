@@ -33,7 +33,7 @@ Brain::Brain() :
 }
 
 void Brain::add_part(AbstractPart& robo_part) {
-    Robo::AbstractPartNode* new_part_node = new Robo::AbstractPartNode(robo_part);
+    AbstractPartNode* new_part_node = new AbstractPartNode(robo_part);
 
     if (m_first_part_added_node == NULL) {
         m_first_part_added_node = new_part_node;
@@ -46,9 +46,9 @@ void Brain::add_part(AbstractPart& robo_part) {
 }
 
 void Brain::setup() {
-    Robo::AbstractPartNode* current_node = m_first_part_added_node;
+    AbstractPartNode* current_node = m_first_part_added_node;
     while (current_node != NULL) {
-        Robo::AbstractPart& robo_part = current_node->get_robo_part();
+        AbstractPart& robo_part = current_node->get_robo_part();
         Serial.println(String("setting up robo part: ") + robo_part.name());
         robo_part.setup();
         current_node = current_node->get_next_node();

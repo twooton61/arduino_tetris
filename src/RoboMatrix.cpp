@@ -2,7 +2,7 @@
 #include <Robo/Matrix.h>
 namespace Robo {
 Matrix::Matrix(Brain& robo_brain, const int din_pin, const int cs_load_pin, const int clk_pin, const int matricies_on_board) :
-    Robo::AbstractPart(robo_brain, "Max Matrix"),
+    AbstractPart(robo_brain, "Max Matrix"),
     m_din_pin(din_pin),
     m_cs_load_pin(cs_load_pin),
     m_clk_pin(clk_pin),

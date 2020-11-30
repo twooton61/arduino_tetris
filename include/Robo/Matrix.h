@@ -6,7 +6,7 @@
 #include <Robo/AbstractPart.h>
 
 namespace Robo {
-class Matrix : Robo::AbstractPart {
+class Matrix : AbstractPart {
     static const int DIM = 8;
     const int m_din_pin;
     const int m_cs_load_pin;
