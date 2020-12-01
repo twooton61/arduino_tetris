@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <Robo/IRReceiver.h>
+#include <Helpers.h>
 
 namespace Robo {
 IRReceiver::IRReceiver(Brain& robo_brain, const int pin) :
@@ -21,7 +22,8 @@ IRReceiver::IRCode IRReceiver::get_ir_code() {
     IRCode ir_code = m_ir_receiver_results.value;
     IRCode ir_code_to_consider = 0;
 
-    if (is_holding()) {
+    const bool is_holding_button = ir_code == 4294967295;
+    if (is_holding_button) {
         ir_code_to_consider = m_last_ir_code;
     }
     else {
@@ -29,24 +31,20 @@ IRReceiver::IRCode IRReceiver::get_ir_code() {
         m_last_ir_code = ir_code;
     }
 
-    Serial.print("IR code: ");
-    Serial.print(ir_code);
-    Serial.print(" IR to consider: ");
-    Serial.println(ir_code_to_consider);
+    Log::print("IR code: ");
+    Log::print(String(ir_code));
+    Log::print(" IR to consider: ");
+    Log::println(String(ir_code_to_consider));
 
     return ir_code_to_consider;
 }
-
-boolean IRReceiver::is_holding() {
-    return get_ir_code() == 4294967295;
-}
-
 
 boolean IRReceiver::left_pressed() {
     switch (get_ir_code()) {
         case 2351064443UL:
         case 16716015UL:
-            Serial.println("left pressed");
+            Log::println("left pressed");
+
             return true;
             break;
     }
@@ -57,7 +55,8 @@ boolean IRReceiver::left_pressed() {
 boolean IRReceiver::right_pressed() {
     switch (get_ir_code()) {
         case 16734885UL:
-            Serial.println("right pressed");
+            Log::println("right pressed");
+
             return true;
             break;
     }
@@ -68,7 +67,8 @@ boolean IRReceiver::right_pressed() {
 boolean IRReceiver::up_pressed() {
     switch (get_ir_code()) {
         case 16718055UL:
-            Serial.println("up pressed");
+            Log::println("up pressed");
+
             return true;
             break;
     }
@@ -79,7 +79,8 @@ boolean IRReceiver::up_pressed() {
 boolean IRReceiver::down_pressed() {
     switch (get_ir_code()) {
         case 16730805UL:
-            Serial.println("down pressed");
+            Log::println("down pressed");
+
             return true;
             break;
     }

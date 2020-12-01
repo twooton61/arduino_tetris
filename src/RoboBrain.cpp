@@ -1,6 +1,7 @@
 #include <Robo/Brain.h>
 #include <Arduino.h>
 #include <Robo/AbstractPart.h>
+#include <Helpers.h>
 
 namespace Robo {
 class AbstractPartNode {
@@ -49,7 +50,9 @@ void Brain::setup() {
     AbstractPartNode* current_node = m_first_part_added_node;
     while (current_node != NULL) {
         AbstractPart& robo_part = current_node->get_robo_part();
-        Serial.println(String("setting up robo part: ") + robo_part.name());
+
+        Log::println(String("setting up robo part: ") + robo_part.name());
+
         robo_part.setup();
         current_node = current_node->get_next_node();
     }

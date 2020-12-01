@@ -1,5 +1,7 @@
 #include <Arduino.h>
 #include <Robo/Matrix.h>
+#include <Helpers.h>
+
 namespace Robo {
 Matrix::Matrix(Brain& robo_brain, const int din_pin, const int cs_load_pin, const int clk_pin, const int matricies_on_board) :
     AbstractPart(robo_brain, "Max Matrix"),
@@ -18,7 +20,6 @@ void Matrix::setup() {
     m_max_matrix.setIntensity(0);
 }
 
-
 void Matrix::clear_current() {
     m_max_matrix.setDot(current_matrix_x, current_matrix_y, 0);
 }
@@ -35,8 +36,8 @@ void Matrix::move_x(const int movement)
         new_x = m_max_cols-1;
     }
 
-    Serial.print("x: ");
-    Serial.println(new_x);
+    Log::print("x: ");
+    Log::println(String(new_x));
 
     current_matrix_x = new_x;
 
@@ -55,8 +56,8 @@ void Matrix::move_y(const int movement)
         new_y = m_max_rows-1;
     }
 
-    Serial.print("y: ");
-    Serial.println(new_y);
+    Log::print("y: ");
+    Log::println(String(new_y));
 
     current_matrix_y = new_y;
 
@@ -67,4 +68,4 @@ void Matrix::render()
 {
     m_max_matrix.setDot(current_matrix_x, current_matrix_y, 1);
 }
-}
+}  // namespace Robo

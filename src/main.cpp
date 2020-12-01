@@ -5,11 +5,17 @@
   Description: Arduino Tetris
 */
 
+
 #include <Arduino.h>
 #include <Helpers.h>
 #include <Robo/Brain.h>
 #include <Robo/Matrix.h>
 #include <Robo/IRReceiver.h>
+
+
+#ifdef DEBUG
+#include <avr8-stub.h>
+#endif
 
 Robo::Brain robo_brain;
 
@@ -27,7 +33,11 @@ Robo::IRReceiver robo_ir_receiver(robo_brain, DIGITAL_IO_PIN(7));
 
 void setup()
 {
-  Serial.begin(9600);
+  #ifdef DEBUG
+  debug_init();
+  #endif
+
+  Log::init();
 
   robo_brain.setup();
 
@@ -36,17 +46,20 @@ void setup()
 
 void loop()
 {
+  Log::println("loop");
   if (robo_ir_receiver.detect_signal()) {
+    Log::println("signal detected");
+
     if (robo_ir_receiver.left_pressed()) {
       robo_matrix.move_x(-1);
     }
-    if (robo_ir_receiver.right_pressed()) {
+    else if (robo_ir_receiver.right_pressed()) {
       robo_matrix.move_x(1);
     }
-    if (robo_ir_receiver.down_pressed()) {
+    else if (robo_ir_receiver.down_pressed()) {
       robo_matrix.move_y(1);
     }
-    if (robo_ir_receiver.up_pressed()) {
+    else if (robo_ir_receiver.up_pressed()) {
       robo_matrix.move_y(-1);
     }
 
