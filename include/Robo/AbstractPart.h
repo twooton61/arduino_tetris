@@ -10,7 +10,7 @@ class AbstractPart {
 
     AbstractPart(Brain& robo_brain, const String part_name);
 
-    inline String name() {
+    inline const String name() const {
         return m_part_name;
     }
 

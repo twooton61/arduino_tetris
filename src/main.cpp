@@ -50,16 +50,17 @@ void loop()
   if (robo_ir_receiver.detect_signal()) {
     Log::println("signal detected");
 
-    if (robo_ir_receiver.left_pressed()) {
+    const Robo::IRReceiver::IRCode ir_code = robo_ir_receiver.get_ir_code();
+    if (robo_ir_receiver.is_left_code(ir_code)) {
       robo_matrix.move_x(-1);
     }
-    else if (robo_ir_receiver.right_pressed()) {
+    else if (robo_ir_receiver.is_right_code(ir_code)) {
       robo_matrix.move_x(1);
     }
-    else if (robo_ir_receiver.down_pressed()) {
+    else if (robo_ir_receiver.is_down_code(ir_code)) {
       robo_matrix.move_y(1);
     }
-    else if (robo_ir_receiver.up_pressed()) {
+    else if (robo_ir_receiver.is_up_code(ir_code)) {
       robo_matrix.move_y(-1);
     }
 

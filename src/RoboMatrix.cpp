@@ -15,12 +15,14 @@ Matrix::Matrix(Brain& robo_brain, const int din_pin, const int cs_load_pin, cons
 {
 }
 
-void Matrix::setup() {
+void Matrix::setup()
+{
     m_max_matrix.init();
     m_max_matrix.setIntensity(0);
 }
 
-void Matrix::clear_current() {
+void Matrix::clear_current()
+{
     m_max_matrix.setDot(current_matrix_x, current_matrix_y, 0);
 }
 

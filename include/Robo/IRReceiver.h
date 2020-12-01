@@ -10,8 +10,6 @@ class IRReceiver : AbstractPart {
     public:
     typedef unsigned long IRCode;
 
-
-
     IRReceiver(Brain& robo_brain, const int pin);
 
     void setup() override;
@@ -19,11 +17,11 @@ class IRReceiver : AbstractPart {
     bool detect_signal();
 
     IRCode get_ir_code();
-    boolean is_holding();
-    boolean left_pressed();
-    boolean right_pressed();
-    boolean up_pressed();
-    boolean down_pressed();
+    boolean is_holding_code(const IRCode ir_code);
+    boolean is_left_code(const IRCode ir_code) const;
+    boolean is_right_code(const IRCode ir_code) const;
+    boolean is_up_code(const IRCode ir_code) const;
+    boolean is_down_code(const IRCode ir_code) const;
 
     void resume();
 

@@ -10,15 +10,18 @@ IRReceiver::IRReceiver(Brain& robo_brain, const int pin) :
 {
 }
 
-void IRReceiver::setup() {
+void IRReceiver::setup()
+{
     m_ir_receiver.enableIRIn();
 }
 
-bool IRReceiver::detect_signal() {
+bool IRReceiver::detect_signal()
+{
     return m_ir_receiver.decode(&m_ir_receiver_results);
 }
 
-IRReceiver::IRCode IRReceiver::get_ir_code() {
+IRReceiver::IRCode IRReceiver::get_ir_code()
+{
     IRCode ir_code = m_ir_receiver_results.value;
     IRCode ir_code_to_consider = 0;
 
@@ -39,8 +42,9 @@ IRReceiver::IRCode IRReceiver::get_ir_code() {
     return ir_code_to_consider;
 }
 
-boolean IRReceiver::left_pressed() {
-    switch (get_ir_code()) {
+boolean IRReceiver::is_left_code(const IRCode ir_code) const
+{
+    switch (ir_code) {
         case 2351064443UL:
         case 16716015UL:
             Log::println("left pressed");
@@ -52,8 +56,9 @@ boolean IRReceiver::left_pressed() {
     return false;
 }
 
-boolean IRReceiver::right_pressed() {
-    switch (get_ir_code()) {
+boolean IRReceiver::is_right_code(const IRCode ir_code) const
+{
+    switch (ir_code) {
         case 16734885UL:
             Log::println("right pressed");
 
@@ -64,8 +69,9 @@ boolean IRReceiver::right_pressed() {
     return false;
 }
 
-boolean IRReceiver::up_pressed() {
-    switch (get_ir_code()) {
+boolean IRReceiver::is_up_code(const IRCode ir_code) const
+{
+    switch (ir_code) {
         case 16718055UL:
             Log::println("up pressed");
 
@@ -76,8 +82,9 @@ boolean IRReceiver::up_pressed() {
     return false;
 }
 
-boolean IRReceiver::down_pressed() {
-    switch (get_ir_code()) {
+boolean IRReceiver::is_down_code(const IRCode ir_code) const
+{
+    switch (ir_code) {
         case 16730805UL:
             Log::println("down pressed");
 
@@ -88,7 +95,8 @@ boolean IRReceiver::down_pressed() {
     return false;
 }
 
-void IRReceiver::resume() {
+void IRReceiver::resume()
+{
     m_ir_receiver.resume();
 }
 }  // namespace Robo

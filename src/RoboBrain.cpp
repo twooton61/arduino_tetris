@@ -33,7 +33,8 @@ Brain::Brain() :
 {
 }
 
-void Brain::add_part(AbstractPart& robo_part) {
+void Brain::add_part(AbstractPart& robo_part)
+{
     AbstractPartNode* new_part_node = new AbstractPartNode(robo_part);
 
     if (m_first_part_added_node == NULL) {
@@ -46,7 +47,8 @@ void Brain::add_part(AbstractPart& robo_part) {
     }
 }
 
-void Brain::setup() {
+void Brain::setup()
+{
     AbstractPartNode* current_node = m_first_part_added_node;
     while (current_node != NULL) {
         AbstractPart& robo_part = current_node->get_robo_part();
