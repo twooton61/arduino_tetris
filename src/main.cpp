@@ -12,8 +12,7 @@
 #include <Robo/Matrix.h>
 #include <Robo/IRReceiver.h>
 
-
-#ifdef DEBUG
+#ifdef ROBO_DEBUGGER
 #include <avr8-stub.h>
 #endif
 
@@ -33,7 +32,7 @@ Robo::IRReceiver robo_ir_receiver(robo_brain, DIGITAL_IO_PIN(7));
 
 void setup()
 {
-  #ifdef DEBUG
+  #if ROBO_DEBUGGER
   debug_init();
   #endif
 

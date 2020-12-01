@@ -5,24 +5,26 @@
 
 #define DIGITAL_IO_PIN(pin) pin
 
+#define ROBO_DEBUGGER true
+
 namespace Log {
 inline void init()
 {
-    #ifndef DEBUG
+    #if ROBO_DEBUGGER == false
     Serial.begin(9600);
     #endif
 }
 
 inline void print(const String& message)
 {
-    #ifndef DEBUG
-    Serial.println(message);
+    #if ROBO_DEBUGGER == false
+    Serial.print(message);
     #endif
 }
 
 inline void println(const String& message)
 {
-    #ifndef DEBUG
+    #if ROBO_DEBUGGER == false
     Serial.println(message);
     #endif
 }
