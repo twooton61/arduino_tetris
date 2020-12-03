@@ -30,10 +30,10 @@ Robo::Matrix robo_matrix(
 
 Robo::IRReceiver robo_ir_receiver(robo_brain, DIGITAL_IO_PIN(7));
 
-Robo::Button up_button(robo_brain, 2);
-Robo::Button down_button(robo_brain, 3);
-Robo::Button left_button(robo_brain, 4);
-Robo::Button right_button(robo_brain, 5);
+Robo::Button up_button(robo_brain, DIGITAL_IO_PIN(2));
+Robo::Button down_button(robo_brain, DIGITAL_IO_PIN(3));
+Robo::Button left_button(robo_brain, DIGITAL_IO_PIN(4));
+Robo::Button right_button(robo_brain, DIGITAL_IO_PIN(5));
 
 void setup()
 {
