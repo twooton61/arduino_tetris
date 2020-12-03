@@ -5,7 +5,7 @@
 
 #define DIGITAL_IO_PIN(pin) pin
 
-#define ROBO_DEBUGGER true
+#define ROBO_DEBUGGER false
 
 namespace Log {
 inline void init()

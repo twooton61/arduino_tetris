@@ -30,6 +30,12 @@ Robo::Matrix robo_matrix(
 
 Robo::IRReceiver robo_ir_receiver(robo_brain, DIGITAL_IO_PIN(7));
 
+const int UP_BUTTON_PIN = DIGITAL_IO_PIN(2);
+const int DOWN_BUTTON_PIN = DIGITAL_IO_PIN(3);
+const int LEFT_BUTTON_PIN = DIGITAL_IO_PIN(4);
+const int RIGHT_BUTTON_PIN = DIGITAL_IO_PIN(5);
+const int PRESSED = LOW;
+
 void setup()
 {
   #if ROBO_DEBUGGER
@@ -40,12 +46,16 @@ void setup()
 
   robo_brain.setup();
 
+  pinMode(UP_BUTTON_PIN, INPUT_PULLUP);
+  pinMode(DOWN_BUTTON_PIN, INPUT_PULLUP);
+  pinMode(LEFT_BUTTON_PIN, INPUT_PULLUP);
+  pinMode(RIGHT_BUTTON_PIN, INPUT_PULLUP);
+
   robo_matrix.render();
 }
 
 void loop()
 {
-  Log::println("loop");
   if (robo_ir_receiver.detect_signal()) {
     Log::println("signal detected");
 
@@ -64,6 +74,24 @@ void loop()
     }
 
     robo_ir_receiver.resume();
+  }
+
+  if (digitalRead(UP_BUTTON_PIN) == PRESSED) {
+    Log::println("up button pressed");
+
+    robo_matrix.move_y(-1);
+  }
+  if (digitalRead(DOWN_BUTTON_PIN) == PRESSED) {
+    Log::println("down button pressed");
+    robo_matrix.move_y(1);
+  }
+  if (digitalRead(LEFT_BUTTON_PIN) == PRESSED) {
+    Log::println("left button pressed");
+    robo_matrix.move_x(-1);
+  }
+  if (digitalRead(RIGHT_BUTTON_PIN) == PRESSED) {
+    Log::println("right button pressed");
+    robo_matrix.move_x(1);
   }
 
   delay(500);
