@@ -19,13 +19,12 @@
 
 Robo::Brain robo_brain;
 
-const int max_matricies_on_board = 2;
 Robo::Matrix robo_matrix(
   robo_brain,
-  DIGITAL_IO_PIN(11),
-  DIGITAL_IO_PIN(10),
-  DIGITAL_IO_PIN(13),
-  max_matricies_on_board
+  MATRIX_DIN_PIN(11),
+  MATRIX_CS_PIN(10),
+  MATRIX_CLK_PIN(12),
+  MATRICIES_ON_BOARD(4)
 );
 
 Robo::IRReceiver robo_ir_receiver(robo_brain, DIGITAL_IO_PIN(7));
@@ -73,11 +72,11 @@ void loop()
   if (up_button.is_pressed()) {
     Log::println("up button pressed");
 
-    robo_matrix.move_y(-1);
+    robo_matrix.move_y(1);
   }
   if (down_button.is_pressed()) {
     Log::println("down button pressed");
-    robo_matrix.move_y(1);
+    robo_matrix.move_y(-1);
   }
   if (left_button.is_pressed()) {
     Log::println("left button pressed");

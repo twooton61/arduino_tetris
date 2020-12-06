@@ -2,22 +2,18 @@
 #define ROBO_MATRIX_H_
 
 #include <Arduino.h>
-#include <MaxMatrix.h>
+#include <LedControl.h>
 #include <Robo/AbstractPart.h>
 
+#define MATRIX_DIN_PIN(pin) pin
+#define MATRIX_CLK_PIN(pin) pin
+#define MATRIX_CS_PIN(pin) pin
+#define MATRICIES_ON_BOARD(pin) pin
 namespace Robo {
 class Matrix : AbstractPart {
-    static const int DIM = 8;
-    const int m_din_pin;
-    const int m_cs_load_pin;
-    const int m_clk_pin;
-    const int m_matricies_on_board;
-    const int m_max_rows;
-    const int m_max_cols;
-
-    MaxMatrix m_max_matrix;
-    int current_matrix_x = 0;
-    int current_matrix_y = 0;
+    LedControl m_max_matrix;
+    int m_current_matrix_x;
+    int m_current_matrix_y;
 
     public:
 
@@ -28,6 +24,7 @@ class Matrix : AbstractPart {
     void move_x(const int movement);
     void move_y(const int movement);
     void render();
+    void set_on_led(const int x, const int y, const bool on);
 };
 }  // namespace Robo
 
