@@ -76,15 +76,15 @@ void Matrix::render()
 
 void Matrix::set_on_led(const int x, const int y, const bool on)
 {
-    const int true_x = 8 - y;
-    const int true_y = 8 - x;
     const int true_board = (y - 1) / LEDS_PER_MATRIX_COL;
+    const int true_x = (true_board * 8) + (8 - y);
+    const int true_y = 8 - x;
     Log::println(String("x: ") + String(x) + String(" True x: ") + String(true_x));
     Log::println(String("y: ") + String(y) + String(" True y: ") + String(true_y));
     Log::println(String("True board: ") + true_board);
 
     // m_max_matrix.setLed(2, 4, 7, on);
-    m_max_matrix.setLed(true_board, true_y, (true_board * 8) + true_x, on);
+    m_max_matrix.setLed(true_board, true_y, true_x, on);
 }
 
 }  // namespace Robo
