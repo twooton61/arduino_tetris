@@ -10,22 +10,28 @@
 #define MATRIX_CS_PIN(pin) pin
 #define MATRICIES_ON_BOARD(pin) pin
 namespace Robo {
+
 class Matrix : AbstractPart {
     LedControl m_max_matrix;
-    int m_current_matrix_x;
-    int m_current_matrix_y;
+    static const int m_min_x = 1;
+    static const int m_min_y = 1;
+    const int m_max_x;
+    const int m_max_y;
 
     public:
+    class Shape {
+        public:
+
+        Shape(int** shape, const int x, const int y);
+    };
 
     Matrix(Brain& robo_brain, const int din_pin, const int cs_load_pin, const int clk_pin, const int matricies_on_board);
 
     void setup() override;
-    void clear_current();
-    void move_x(const int movement);
-    void move_y(const int movement);
-    void render();
-    void set_on_led(const int x, const int y, const bool on);
+    void clear();
+    void set_led_on(const int x, const int y, const bool on);
 };
+
 }  // namespace Robo
 
 #endif  // ROBO_MATRIX_H_
