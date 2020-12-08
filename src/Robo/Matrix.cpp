@@ -43,14 +43,17 @@ void Matrix::clear() {
 
 void Matrix::set_led_on(const int x, const int y, const bool on)
 {
-    const int true_board = (y - 1) / LEDS_PER_MATRIX_COL;
-    const int true_x = (true_board * 8) + (8 - y);
-    const int true_y = 8 - x;
-    // Log::println(String("x: ") + String(x) + String(" True x: ") + String(true_x));
-    // Log::println(String("y: ") + String(y) + String(" True y: ") + String(true_y));
-    // Log::println(String("True board: ") + true_board);
+    // the boards are meant to be laid down sideways, with the 0 matrix being the right most and 3 being the left most
+    // this also that rows and cols are flipped and are 0 indexed
+    // if laid on it's side 0,0 is the top left of each seperate matrix
 
-    m_max_matrix.setLed(true_board, true_y, true_x, on);
+    const int board_index = y / LEDS_PER_MATRIX_COL;
+    const int col_index = (LEDS_PER_MATRIX_COL - (y % LEDS_PER_MATRIX_COL)) - 1;
+    const int row_index = (LEDS_PER_MATRIX_ROW - x) - 1;
+    // Log::println(String("set_led_on x: ") + String(x) + String(" True y: ") + String(row_index) + String(" on board: ") + String(board_index));
+    // Log::println(String("set_led_on y: ") + String(y) + String(" True x: ") + String(col_index) + String(" on board: ") + String(board_index));
+
+    m_max_matrix.setLed(board_index, row_index, col_index, on);
 }
 
 }  // namespace Robo

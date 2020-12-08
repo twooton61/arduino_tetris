@@ -33,38 +33,20 @@ Robo::Button down_button(robo_brain, DIGITAL_IO_PIN(3));
 Robo::Button left_button(robo_brain, DIGITAL_IO_PIN(4));
 Robo::Button right_button(robo_brain, DIGITAL_IO_PIN(5));
 
-const int COLS = 8;
-const int ROWS = 32;
-int dot_pile[COLS][ROWS] = {{ 0 }};
+const int LED_COLS = 8;
+const int LED_ROWS = 32;
+int dot_pile[LED_COLS][LED_ROWS] = {{ 0 }};
 
 struct Peice {
-  static const int MAX_WIDTH = 4;
-  static const int MAX_HEIGHT = 4;
+  static const int MAX_WIDTH = 2;
+  static const int MAX_HEIGHT = 2;
   int x = 1;
-  int y = ROWS;
+  int y = 1;
   int shape [MAX_WIDTH][MAX_HEIGHT] = {
-    { 0, 1, 1, 0 },
-    { 1, 0, 0, 1 },
-    { 0, 0, 0, 0 },
-    { 1, 0, 0, 1 }
+    { 1, 1 },
+    { 0, 1 }
   };
 } peice;
-
-
-// void setup_new_peice(Peice& peice)
-// {
-//   peice.x = 1;
-//   peice.y = ROWS;
-//   for (int i = 0; i < Peice::MAX_WIDTH; i++) {
-//     for (int j = 0; j < Peice::MAX_HEIGHT; j++) {
-//       peice.shape[i][j] = 0;
-//     }
-//   }
-//   peice.shape[0][0] = 1;
-//   peice.shape[0][1] = 1;
-//   peice.shape[0][2] = 1;
-//   peice.shape[0][4] = 1;
-// }
 
 void setup()
 {
@@ -79,7 +61,7 @@ void setup()
 
 void loop()
 {
-  Log::println("loop");
+  // Log::println("loop");
 
   if (robo_ir_receiver.detect_signal()) {
     Log::println("signal detected");
@@ -89,23 +71,16 @@ void loop()
 
   robo_matrix.clear();
 
-  for (int x = 1; x <= COLS; ++x) {
-    for (int y = 1; y <= ROWS; ++y) {
-      if (((x >= peice.x) && (x < (peice.x + 4))) &&
-        ((y >= peice.y) && (y < (peice.y + 4)))
+  for (int x = 0; x < LED_COLS; ++x) {
+    for (int y = 0; y < LED_ROWS; ++y) {
+      if (
+        (x >= peice.x && x <= (peice.x + (Peice::MAX_WIDTH - 1))) &&
+        (y >= peice.y && y <= (peice.y + (Peice::MAX_HEIGHT - 1))) &&
+        peice.shape[y - peice.y][x - peice.x]
       ) {
-        if (peice.shape[y - peice.y][x - peice.x]) {
-          robo_matrix.set_led_on(x, y, true);
-        }
+        Log::println(String("px: ") + String(peice.x) + String("col: ") + String(x));
+        robo_matrix.set_led_on(x, y, true);
       }
-      // Log::println(String("x: ") + String(x));
-      // Log::println(String("y: ") + String(y));
-      // Log::println(String("val: ") + String(dot_pile[(x - 1)][(y -1)]));
-
-      // const boolean is_on = dot_pile[x - 1][y -1] == 1;
-      // if (is_on) {
-      //   robo_matrix.set_led_on(x, y, true);
-      // }
     }
   }
 
@@ -121,7 +96,11 @@ void loop()
     peice.y--;
   }
 
-  peice.y--;
+  if (up_button.is_pressed()) {
+    peice.y++;
+  }
 
-  delay(500);
+  // peice.y--;
+
+  delay(1000);
 }
