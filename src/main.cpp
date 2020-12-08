@@ -33,16 +33,28 @@ Robo::Button down_button(robo_brain, DIGITAL_IO_PIN(3));
 Robo::Button left_button(robo_brain, DIGITAL_IO_PIN(4));
 Robo::Button right_button(robo_brain, DIGITAL_IO_PIN(5));
 
-const int LED_COLS = 8;
-const int LED_ROWS = 32;
-int dot_pile[LED_COLS][LED_ROWS] = {{ 0 }};
+const int LEDS_TO_USE_FOR_BOARD = 2;
+const int LED_COLS_PER_MATRIX = 8;
+const int LED_ROWS_PER_MATRIX = 8;
+const int LED_COLS = LED_COLS_PER_MATRIX;
+const int LED_ROWS = LEDS_TO_USE_FOR_BOARD * LED_ROWS_PER_MATRIX;
+
+// upside down
+int dot_pile[LED_ROWS][LED_COLS] = {
+  { 1, 1, 0, 0, 0, 1, 1, 1 },
+  { 1, 1, 0, 0, 0, 1, 0, 0 },
+  { 0, 0, 0, 0, 0, 1, 0, 0 },
+  { 0, 0, 0, 0, 0, 1, 0, 0 }
+
+};
 
 struct Peice {
   static const int MAX_WIDTH = 2;
   static const int MAX_HEIGHT = 2;
-  int x = 1;
-  int y = 1;
+  int x = 0;
+  int y = LED_ROWS - MAX_HEIGHT;
   int shape [MAX_WIDTH][MAX_HEIGHT] = {
+    // upside down
     { 1, 1 },
     { 0, 1 }
   };
@@ -71,16 +83,39 @@ void loop()
 
   robo_matrix.clear();
 
-  for (int x = 0; x < LED_COLS; ++x) {
-    for (int y = 0; y < LED_ROWS; ++y) {
-      if (
-        (x >= peice.x && x <= (peice.x + (Peice::MAX_WIDTH - 1))) &&
-        (y >= peice.y && y <= (peice.y + (Peice::MAX_HEIGHT - 1))) &&
-        peice.shape[y - peice.y][x - peice.x]
-      ) {
-        Log::println(String("px: ") + String(peice.x) + String("col: ") + String(x));
-        robo_matrix.set_led_on(x, y, true);
+  if (peice.y >= 0) {
+    for (int y = peice.y; y < LED_ROWS; ++y) {
+      for (int x = peice.x; x < LED_COLS; ++x) {
+        if (
+          (x >= peice.x && x <= (peice.x + (Peice::MAX_WIDTH - 1))) &&
+          (y >= peice.y && y <= (peice.y + (Peice::MAX_HEIGHT - 1))) &&
+          peice.shape[y - peice.y][x - peice.x]
+        ) {
+          // Log::println(String("x: ") + String(peice.x) + String(" y: ") + String(y));
+
+          robo_matrix.set_led_on(x, y, true);
+        }
       }
+    }
+  }
+
+  for (int y = 0; y < LED_ROWS; ++y) {
+    bool row_has_dot = false;
+    for (int x = 0; x < LED_COLS; ++x) {
+      if (
+        dot_pile[y][x]
+      ) {
+        // Log::println(String("px: ") + String(peice.x) + String("col: ") + String(x));
+        robo_matrix.set_led_on(x, y, true);
+
+        row_has_dot = true;
+      }
+    }
+
+    // if there are no dots on a single row of a pile, we can stop drawing up
+    if (!row_has_dot) {
+      // Log::println(String("breaking on row ") + String(y));
+      break;
     }
   }
 
@@ -100,7 +135,9 @@ void loop()
     peice.y++;
   }
 
-  // peice.y--;
+  if (peice.y > 0) {
+    peice.y--;
+  }
 
-  delay(1000);
+  delay(300);
 }
