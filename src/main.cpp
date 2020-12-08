@@ -33,14 +33,14 @@ Robo::Button down_button(robo_brain, DIGITAL_IO_PIN(3));
 Robo::Button left_button(robo_brain, DIGITAL_IO_PIN(4));
 Robo::Button right_button(robo_brain, DIGITAL_IO_PIN(5));
 
-const int LEDS_TO_USE_FOR_BOARD = 2;
+const int LEDS_TO_USE_FOR_BOARD = 3;
 const int LED_COLS_PER_MATRIX = 8;
 const int LED_ROWS_PER_MATRIX = 8;
 const int LED_COLS = LED_COLS_PER_MATRIX;
 const int LED_ROWS = LEDS_TO_USE_FOR_BOARD * LED_ROWS_PER_MATRIX;
 
 // upside down
-int dot_pile[LED_ROWS][LED_COLS] = {
+bool dot_pile[LED_ROWS][LED_COLS] = {
   { 1, 1, 0, 0, 0, 1, 1, 1 },
   { 1, 1, 0, 0, 0, 1, 0, 0 },
   { 0, 0, 0, 0, 0, 1, 0, 0 },
@@ -53,12 +53,75 @@ struct Peice {
   static const int MAX_HEIGHT = 2;
   int x = 0;
   int y = LED_ROWS - MAX_HEIGHT;
-  int shape [MAX_WIDTH][MAX_HEIGHT] = {
+  bool shape [MAX_WIDTH][MAX_HEIGHT] = {
     // upside down
     { 1, 1 },
     { 0, 1 }
   };
+
+  void draw(Robo::Matrix& robo_matrix) const
+  {
+
+  }
 } peice;
+
+void clear_peice()
+{
+  if (peice.y >= 0) {
+    for (int y = peice.y; y < LED_ROWS; ++y) {
+      for (int x = peice.x; x < LED_COLS; ++x) {
+        if (
+          (x >= peice.x && x <= (peice.x + (Peice::MAX_WIDTH - 1))) &&
+          (y >= peice.y && y <= (peice.y + (Peice::MAX_HEIGHT - 1))) &&
+          peice.shape[y - peice.y][x - peice.x]
+        ) {
+          robo_matrix.set_led_on(x, y, false);
+        }
+      }
+    }
+  }
+}
+
+void draw_dot_pile()
+{
+  for (int y = 0; y < LED_ROWS; ++y) {
+    bool row_has_dot = false;
+    for (int x = 0; x < LED_COLS; ++x) {
+      if (
+        dot_pile[y][x]
+      ) {
+        robo_matrix.set_led_on(x, y, true);
+
+        row_has_dot = true;
+      }
+    }
+
+    // if there are no dots on a single row of a pile, we can stop drawing up
+    if (!row_has_dot) {
+      break;
+    }
+  }
+}
+
+void draw_peice()
+{
+  if (peice.y >= 0) {
+    for (int y = peice.y; y < LED_ROWS; ++y) {
+      for (int x = peice.x; x < LED_COLS; ++x) {
+        if (
+          (x >= peice.x && x <= (peice.x + (Peice::MAX_WIDTH - 1))) &&
+          (y >= peice.y && y <= (peice.y + (Peice::MAX_HEIGHT - 1))) &&
+          peice.shape[y - peice.y][x - peice.x]
+        ) {
+          robo_matrix.set_led_on(x, y, true);
+        }
+      }
+    }
+  }
+}
+
+int period = 300;
+unsigned long time_now = 0;
 
 void setup()
 {
@@ -73,71 +136,39 @@ void setup()
 
 void loop()
 {
-  // Log::println("loop");
-
   if (robo_ir_receiver.detect_signal()) {
     Log::println("signal detected");
 
     robo_ir_receiver.resume();
   }
 
-  robo_matrix.clear();
+  draw_peice();
 
-  if (peice.y >= 0) {
-    for (int y = peice.y; y < LED_ROWS; ++y) {
-      for (int x = peice.x; x < LED_COLS; ++x) {
-        if (
-          (x >= peice.x && x <= (peice.x + (Peice::MAX_WIDTH - 1))) &&
-          (y >= peice.y && y <= (peice.y + (Peice::MAX_HEIGHT - 1))) &&
-          peice.shape[y - peice.y][x - peice.x]
-        ) {
-          // Log::println(String("x: ") + String(peice.x) + String(" y: ") + String(y));
+  draw_dot_pile();
 
-          robo_matrix.set_led_on(x, y, true);
-        }
-      }
-    }
-  }
+  if (millis() >= time_now + period){
+    time_now += period;
 
-  for (int y = 0; y < LED_ROWS; ++y) {
-    bool row_has_dot = false;
-    for (int x = 0; x < LED_COLS; ++x) {
-      if (
-        dot_pile[y][x]
-      ) {
-        // Log::println(String("px: ") + String(peice.x) + String("col: ") + String(x));
-        robo_matrix.set_led_on(x, y, true);
+    clear_peice();
 
-        row_has_dot = true;
-      }
+    if (right_button.is_pressed()) {
+      peice.x++;
     }
 
-    // if there are no dots on a single row of a pile, we can stop drawing up
-    if (!row_has_dot) {
-      // Log::println(String("breaking on row ") + String(y));
-      break;
+    if (left_button.is_pressed()) {
+      peice.x--;
+    }
+
+    if (down_button.is_pressed()) {
+      peice.y--;
+    }
+
+    if (up_button.is_pressed()) {
+      peice.y++;
+    }
+
+    if (peice.y > 0) {
+      peice.y--;
     }
   }
-
-  if (right_button.is_pressed()) {
-    peice.x++;
-  }
-
-  if (left_button.is_pressed()) {
-    peice.x--;
-  }
-
-  if (down_button.is_pressed()) {
-    peice.y--;
-  }
-
-  if (up_button.is_pressed()) {
-    peice.y++;
-  }
-
-  if (peice.y > 0) {
-    peice.y--;
-  }
-
-  delay(300);
 }
