@@ -88,36 +88,36 @@ void loop()
     clear_peice();
 
     if (right_button.is_pressed()) {
-      peice.x++;
+      peice.x(peice.x() + 1);
     }
 
     if (left_button.is_pressed()) {
-      peice.x--;
+      peice.x(peice.x() - 1);
     }
 
     if (down_button.is_pressed()) {
-      peice.y--;
+      peice.y(peice.y() - 1);
     }
 
     if (up_button.is_pressed()) {
-      peice.y++;
+      peice.y(peice.y() + 1);
     }
 
-    if (peice.y > 0) {
-      peice.y--;
+    if (peice.y() > 0) {
+      peice.y(peice.y() - 1);
     }
   }
 }
 
 void clear_peice()
 {
-  if (peice.y >= 0) {
-    for (int y = peice.y; y < LED_ROWS; ++y) {
-      for (int x = peice.x; x < LED_COLS; ++x) {
+  if (peice.y()>= 0) {
+    for (int y = peice.y(); y < LED_ROWS; ++y) {
+      for (int x = peice.x(); x < LED_COLS; ++x) {
         if (
-          (x >= peice.x && x <= (peice.x + (Tetris::Peice::MAX_WIDTH - 1))) &&
-          (y >= peice.y && y <= (peice.y + (Tetris::Peice::MAX_HEIGHT - 1))) &&
-          peice.shape[y - peice.y][x - peice.x]
+          (x >= peice.x() && x <= (peice.x() + (peice.width() - 1))) &&
+          (y >= peice.y() && y <= (peice.y()+ (peice.height() - 1))) &&
+          peice.hits_shape(y - peice.y(), x - peice.x())
         ) {
           robo_matrix.set_led_on(x, y, false);
         }
@@ -149,13 +149,13 @@ void draw_dot_pile()
 
 void draw_peice()
 {
-  if (peice.y >= 0) {
-    for (int y = peice.y; y < LED_ROWS; ++y) {
-      for (int x = peice.x; x < LED_COLS; ++x) {
+  if (peice.y()>= 0) {
+    for (int y = peice.y(); y < LED_ROWS; ++y) {
+      for (int x = peice.x(); x < LED_COLS; ++x) {
         if (
-          (x >= peice.x && x <= (peice.x + (Tetris::Peice::MAX_WIDTH - 1))) &&
-          (y >= peice.y && y <= (peice.y + (Tetris::Peice::MAX_HEIGHT - 1))) &&
-          peice.shape[y - peice.y][x - peice.x]
+          (x >= peice.x() && x <= (peice.x() + (peice.width() - 1))) &&
+          (y >= peice.y() && y <= (peice.y()+ (peice.height() - 1))) &&
+          peice.hits_shape(y - peice.y(), x - peice.x())
         ) {
           robo_matrix.set_led_on(x, y, true);
         }
