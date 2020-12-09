@@ -33,7 +33,6 @@ private:
   const int m_max_y;
   const int m_matricies_on_board;
 };
-
 }  // namespace Robo
 
 #endif  // ROBO_MATRIX_H_

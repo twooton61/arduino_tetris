@@ -14,12 +14,10 @@ public:
   {
   }
 
-  const int x() { return m_x; }
-  void x(const int x) { m_x = x; }
-  const int y() { return m_y; }
-  void y(const int y) { m_y = y; }
-  const int height() { return m_height; }
-  const int width() { return m_width; }
+  GET_SET(int, x)
+  GET_SET(int, y)
+  GET(int, height)
+  GET(int, width)
   const bool hits_shape(const int y, const int x) { return shape[y][x]; }
 
 private:
@@ -34,8 +32,6 @@ private:
     { 0, 1 }
   };
 };
-
-
 }  // namespace Tetris
 
 #endif  // TETRIS_PEICE_H_
