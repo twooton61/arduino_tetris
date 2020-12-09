@@ -4,33 +4,32 @@
 #include <Arduino.h>
 #include <Robo/AbstractPart.h>
 #include <IRremote.h>
+#include <Helpers.h>
 
 namespace Robo {
-class IRReceiver : AbstractPart {
-    public:
-    typedef unsigned long IRCode;
+class IRReceiver : AbstractPart
+{
+  DISABLE_COPY_AND_ASSIGN(IRReceiver)
+public:
+  typedef unsigned long IRCode;
 
-    IRReceiver(Brain& robo_brain, const int pin);
+  IRReceiver(Brain& robo_brain, const int pin);
 
-    void setup() override;
+  void setup() override;
+  bool detect_signal();
+  IRCode get_ir_code();
+  boolean is_holding_code(const IRCode ir_code);
+  boolean is_left_code(const IRCode ir_code) const;
+  boolean is_right_code(const IRCode ir_code) const;
+  boolean is_up_code(const IRCode ir_code) const;
+  boolean is_down_code(const IRCode ir_code) const;
+  void resume();
 
-    bool detect_signal();
-
-    IRCode get_ir_code();
-    boolean is_holding_code(const IRCode ir_code);
-    boolean is_left_code(const IRCode ir_code) const;
-    boolean is_right_code(const IRCode ir_code) const;
-    boolean is_up_code(const IRCode ir_code) const;
-    boolean is_down_code(const IRCode ir_code) const;
-
-    void resume();
-
-    private:
-
-    const int m_pin = 0;
-    IRrecv m_ir_receiver;
-    decode_results m_ir_receiver_results;
-    IRCode m_last_ir_code = 0;
+private:
+  const int m_pin = 0;
+  IRrecv m_ir_receiver;
+  decode_results m_ir_receiver_results;
+  IRCode m_last_ir_code = 0;
 };
 }  // namespace Robo
 

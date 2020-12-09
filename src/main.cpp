@@ -45,7 +45,6 @@ bool dot_pile[LED_ROWS][LED_COLS] = {
   { 1, 1, 0, 0, 0, 1, 0, 0 },
   { 0, 0, 0, 0, 0, 1, 0, 0 },
   { 0, 0, 0, 0, 0, 1, 0, 0 }
-
 };
 
 struct Peice {

@@ -3,22 +3,20 @@
 
 #include <Arduino.h>
 #include <Robo/Brain.h>
+#include <Helpers.h>
 
 namespace Robo {
-class AbstractPart {
-    public:
+class AbstractPart
+{
+public:
+  AbstractPart(Brain& robo_brain, const String part_name);
+  ~AbstractPart();
 
-    AbstractPart(Brain& robo_brain, const String part_name);
+  inline const String name() const { return m_part_name; }
+  virtual void setup() = 0;
 
-    inline const String name() const {
-        return m_part_name;
-    }
-
-    virtual void setup() = 0;
-
-    private:
-
-    const String m_part_name;
+private:
+  const String m_part_name;
 };
 }  // namespace Robo
 

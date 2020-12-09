@@ -4,16 +4,18 @@
 #include <Arduino.h>
 #include <Robo/AbstractPart.h>
 
-namespace Robo {
-class Button : AbstractPart {
-    const int m_pin;
+namespace Robo
+{
+class Button : AbstractPart
+{
+  DISABLE_COPY_AND_ASSIGN(Button)
+public:
+  Button(Brain& robo_brain, const int pin);
 
-    public:
-
-    Button(Brain& robo_brain, const int pin);
-
-    void setup() override;
-    const bool is_pressed() const;
+  void setup() override;
+  const bool is_pressed() const;
+private:
+  const int m_pin;
 };
 }  // namespace Robo
 
