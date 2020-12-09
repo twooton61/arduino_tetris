@@ -10,31 +10,24 @@ Matrix::Matrix(Brain& robo_brain, const int din_pin, const int cs_load_pin, cons
   AbstractPart(robo_brain, "Max Matrix"),
   m_max_matrix(din_pin, clk_pin, cs_load_pin, matricies_on_board),
   m_max_x(LEDS_PER_MATRIX_COL),
-  m_max_y(LEDS_PER_MATRIX_ROW * matricies_on_board)
+  m_max_y(LEDS_PER_MATRIX_ROW * matricies_on_board),
+  m_matricies_on_board(matricies_on_board)
 {
 }
 
 void Matrix::setup()
 {
-  m_max_matrix.shutdown(0, false);
-  m_max_matrix.shutdown(1, false);
-  m_max_matrix.shutdown(2, false);
-  m_max_matrix.shutdown(3, false);
-  m_max_matrix.setIntensity(0, 5);
-  m_max_matrix.setIntensity(1, 5);
-  m_max_matrix.setIntensity(2, 5);
-  m_max_matrix.setIntensity(3, 5);
-  m_max_matrix.clearDisplay(0);
-  m_max_matrix.clearDisplay(1);
-  m_max_matrix.clearDisplay(2);
-  m_max_matrix.clearDisplay(3);
+  for (int i = 0; i < m_matricies_on_board; ++i) {
+    m_max_matrix.shutdown(i, false);
+    m_max_matrix.setIntensity(i, 5);
+    m_max_matrix.clearDisplay(i);
+  }
 }
 
 void Matrix::clear() {
-  m_max_matrix.clearDisplay(0);
-  m_max_matrix.clearDisplay(1);
-  m_max_matrix.clearDisplay(2);
-  m_max_matrix.clearDisplay(3);
+  for (int i = 0; i < m_matricies_on_board; ++i) {
+    m_max_matrix.clearDisplay(i);
+  }
 }
 
 void Matrix::set_led_on(const int x, const int y, const bool on)

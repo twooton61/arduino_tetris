@@ -25,6 +25,7 @@ private:
   static const int m_min_y = 1;
   const int m_max_x;
   const int m_max_y;
+  const int m_matricies_on_board;
 };
 
 }  // namespace Robo

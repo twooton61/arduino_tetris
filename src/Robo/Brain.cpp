@@ -4,11 +4,9 @@
 #include <Helpers.h>
 
 namespace Robo {
-class AbstractPartNode {
-  AbstractPart& m_robo_part;
-  AbstractPartNode* m_next_node;
-
-  public:
+class AbstractPartNode
+{
+public:
   explicit AbstractPartNode(AbstractPart& robo_part) :
     m_robo_part(robo_part),
     m_next_node(NULL)
@@ -26,6 +24,10 @@ class AbstractPartNode {
   inline AbstractPart& get_robo_part() {
     return m_robo_part;
   }
+
+private:
+  AbstractPart& m_robo_part;
+  AbstractPartNode* m_next_node;
 };
 
 Brain::Brain() :
