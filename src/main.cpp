@@ -11,6 +11,7 @@
 #include <Robo/Matrix.h>
 #include <Robo/IRReceiver.h>
 #include <Robo/Button.h>
+#include <Tetris/Peice.h>
 
 #ifdef ROBO_DEBUGGER
 #include <avr8-stub.h>
@@ -47,77 +48,11 @@ bool dot_pile[LED_ROWS][LED_COLS] = {
   { 0, 0, 0, 0, 0, 1, 0, 0 }
 };
 
-struct Peice {
-  static const int MAX_WIDTH = 2;
-  static const int MAX_HEIGHT = 2;
-  int x = 0;
-  int y = LED_ROWS - MAX_HEIGHT;
-  bool shape [MAX_WIDTH][MAX_HEIGHT] = {
-    // upside down
-    { 1, 1 },
-    { 0, 1 }
-  };
+Tetris::Peice peice(0, LED_ROWS - 2);
 
-  void draw(Robo::Matrix& robo_matrix) const
-  {
-
-  }
-} peice;
-
-void clear_peice()
-{
-  if (peice.y >= 0) {
-    for (int y = peice.y; y < LED_ROWS; ++y) {
-      for (int x = peice.x; x < LED_COLS; ++x) {
-        if (
-          (x >= peice.x && x <= (peice.x + (Peice::MAX_WIDTH - 1))) &&
-          (y >= peice.y && y <= (peice.y + (Peice::MAX_HEIGHT - 1))) &&
-          peice.shape[y - peice.y][x - peice.x]
-        ) {
-          robo_matrix.set_led_on(x, y, false);
-        }
-      }
-    }
-  }
-}
-
-void draw_dot_pile()
-{
-  for (int y = 0; y < LED_ROWS; ++y) {
-    bool row_has_dot = false;
-    for (int x = 0; x < LED_COLS; ++x) {
-      if (
-        dot_pile[y][x]
-      ) {
-        robo_matrix.set_led_on(x, y, true);
-
-        row_has_dot = true;
-      }
-    }
-
-    // if there are no dots on a single row of a pile, we can stop drawing up
-    if (!row_has_dot) {
-      break;
-    }
-  }
-}
-
-void draw_peice()
-{
-  if (peice.y >= 0) {
-    for (int y = peice.y; y < LED_ROWS; ++y) {
-      for (int x = peice.x; x < LED_COLS; ++x) {
-        if (
-          (x >= peice.x && x <= (peice.x + (Peice::MAX_WIDTH - 1))) &&
-          (y >= peice.y && y <= (peice.y + (Peice::MAX_HEIGHT - 1))) &&
-          peice.shape[y - peice.y][x - peice.x]
-        ) {
-          robo_matrix.set_led_on(x, y, true);
-        }
-      }
-    }
-  }
-}
+void clear_peice();
+void draw_dot_pile();
+void draw_peice();
 
 int period = 300;
 unsigned long time_now = 0;
@@ -131,6 +66,8 @@ void setup()
   Log::init();
 
   robo_brain.setup();
+
+  robo_matrix.set_row_on(LEDS_TO_USE_FOR_BOARD * LED_ROWS_PER_MATRIX, true);
 }
 
 void loop()
@@ -168,6 +105,61 @@ void loop()
 
     if (peice.y > 0) {
       peice.y--;
+    }
+  }
+}
+
+void clear_peice()
+{
+  if (peice.y >= 0) {
+    for (int y = peice.y; y < LED_ROWS; ++y) {
+      for (int x = peice.x; x < LED_COLS; ++x) {
+        if (
+          (x >= peice.x && x <= (peice.x + (Tetris::Peice::MAX_WIDTH - 1))) &&
+          (y >= peice.y && y <= (peice.y + (Tetris::Peice::MAX_HEIGHT - 1))) &&
+          peice.shape[y - peice.y][x - peice.x]
+        ) {
+          robo_matrix.set_led_on(x, y, false);
+        }
+      }
+    }
+  }
+}
+
+void draw_dot_pile()
+{
+  for (int y = 0; y < LED_ROWS; ++y) {
+    bool row_has_dot = false;
+    for (int x = 0; x < LED_COLS; ++x) {
+      if (
+        dot_pile[y][x]
+      ) {
+        robo_matrix.set_led_on(x, y, true);
+
+        row_has_dot = true;
+      }
+    }
+
+    // if there are no dots on a single row of a pile, we can stop drawing up
+    if (!row_has_dot) {
+      break;
+    }
+  }
+}
+
+void draw_peice()
+{
+  if (peice.y >= 0) {
+    for (int y = peice.y; y < LED_ROWS; ++y) {
+      for (int x = peice.x; x < LED_COLS; ++x) {
+        if (
+          (x >= peice.x && x <= (peice.x + (Tetris::Peice::MAX_WIDTH - 1))) &&
+          (y >= peice.y && y <= (peice.y + (Tetris::Peice::MAX_HEIGHT - 1))) &&
+          peice.shape[y - peice.y][x - peice.x]
+        ) {
+          robo_matrix.set_led_on(x, y, true);
+        }
+      }
     }
   }
 }

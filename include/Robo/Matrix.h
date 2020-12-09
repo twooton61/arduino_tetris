@@ -19,7 +19,13 @@ public:
   void setup() override;
   void clear();
   void set_led_on(const int x, const int y, const bool on);
+  void set_row_on(const int y, const bool on);
+
 private:
+  const int get_board_index(const int y) const;
+  const int get_col_index(const int y) const;
+  const int get_row_index(const int x) const;
+
   LedControl m_max_matrix;
   static const int m_min_x = 1;
   static const int m_min_y = 1;

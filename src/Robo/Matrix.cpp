@@ -29,6 +29,13 @@ void Matrix::clear() {
     m_max_matrix.clearDisplay(i);
   }
 }
+void Matrix::set_row_on(const int y, const bool on)
+{
+  const int board_index = get_board_index(y);
+  const int col_index = get_col_index(y);
+
+  m_max_matrix.setColumn(board_index, col_index, 0b11111111);
+}
 
 void Matrix::set_led_on(const int x, const int y, const bool on)
 {
@@ -36,12 +43,27 @@ void Matrix::set_led_on(const int x, const int y, const bool on)
   // this also that rows and cols are flipped and are 0 indexed
   // if laid on it's side 0,0 is the top left of each seperate matrix
 
-  const int board_index = y / LEDS_PER_MATRIX_COL;
-  const int col_index = (LEDS_PER_MATRIX_COL - (y % LEDS_PER_MATRIX_COL)) - 1;
-  const int row_index = (LEDS_PER_MATRIX_ROW - x) - 1;
+  const int board_index = get_board_index(y);
+  const int col_index = get_col_index(y);
+  const int row_index = get_row_index(x);
+
   // Log::println(String("set_led_on x: ") + String(x) + String(" True y: ") + String(row_index) + String(" on board: ") + String(board_index));
   // Log::println(String("set_led_on y: ") + String(y) + String(" True x: ") + String(col_index) + String(" on board: ") + String(board_index));
 
   m_max_matrix.setLed(board_index, row_index, col_index, on);
+}
+
+const int Matrix::get_board_index(const int y) const
+{
+  return y / LEDS_PER_MATRIX_COL;
+}
+const int Matrix::get_col_index(const int y) const
+{
+  return (LEDS_PER_MATRIX_COL - (y % LEDS_PER_MATRIX_COL)) - 1;
+}
+
+const int Matrix::get_row_index(const int x) const
+{
+  return (LEDS_PER_MATRIX_ROW - x) - 1;
 }
 }  // namespace Robo
