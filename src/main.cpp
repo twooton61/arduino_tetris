@@ -11,6 +11,7 @@
 #include <Robo/Matrix.h>
 #include <Robo/IRReceiver.h>
 #include <Robo/Button.h>
+#include <Tetris/LPeice.h>
 #include <Tetris/SquarePeice.h>
 
 #ifdef ROBO_DEBUGGER
@@ -48,7 +49,7 @@ bool dot_pile[LED_ROWS][LED_COLS] = {
   { 0, 0, 0, 0, 0, 1, 0, 0 }
 };
 
-Tetris::SquarePeice peice(0, LED_ROWS - 2);
+Tetris::LPeice peice(0, LED_ROWS);
 
 void clear_peice();
 void draw_dot_pile();
