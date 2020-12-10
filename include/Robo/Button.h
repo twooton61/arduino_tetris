@@ -6,7 +6,7 @@
 
 namespace Robo
 {
-class Button : AbstractPart
+class Button : public AbstractPart
 {
   DISABLE_COPY_AND_ASSIGN(Button)
 public:

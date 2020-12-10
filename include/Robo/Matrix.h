@@ -11,7 +11,7 @@
 #define MATRICIES_ON_BOARD(pin) pin
 namespace Robo {
 
-class Matrix : AbstractPart
+class Matrix : public AbstractPart
 {
 public:
   Matrix(Brain& robo_brain, const int din_pin, const int cs_load_pin, const int clk_pin, const int matricies_on_board);

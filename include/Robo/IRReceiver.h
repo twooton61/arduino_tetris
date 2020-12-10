@@ -7,7 +7,7 @@
 #include <Helpers.h>
 
 namespace Robo {
-class IRReceiver : AbstractPart
+class IRReceiver : public AbstractPart
 {
   DISABLE_COPY_AND_ASSIGN(IRReceiver)
 public:
