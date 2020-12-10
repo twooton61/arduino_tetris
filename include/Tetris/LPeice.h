@@ -10,9 +10,9 @@ class LPeice : public Peice
 {
   static const int CONTAINER_DIMENSION = 3;
   const char* peice[CONTAINER_DIMENSION] {
-    "xx ",
     "x  ",
-    "x  "
+    "x  ",
+    "xx "
   };
 
 public:

@@ -35,7 +35,7 @@ public:
 
   const bool hits_shape(const int y, const int x)
   {
-    return m_shape[y][x] != BLANK;
+    return m_shape[(m_container_dimension - y) - 1][x] != BLANK;
   }
 private:
   int m_x;
