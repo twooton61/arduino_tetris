@@ -35,19 +35,16 @@ public:
 
   const bool hits_shape(const int y, const int x)
   {
-    const byte load = m_shape[y];
+    const byte col = m_shape[y];
 
-    Serial.print("x: ");
-    Serial.println(load);
-    return load & (1 << (7 - x));
+    // if bit is set on column
+    return col & (1 << (7 - x));
   }
 private:
   int m_x;
   int m_y;
   const int m_container_dimension;
   byte* const m_shape;
-
-  static const char BLANK = ' ';
 };
 }  // namespace Tetris
 
