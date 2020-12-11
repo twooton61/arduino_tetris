@@ -8,10 +8,10 @@ namespace Tetris
 class Peice
 {
 public:
-  Peice(const int x, const int y, const int container_dimension, const char** shape) :
+  Peice(const int x, const int y, byte* const shape, const int shape_size) :
     m_x(x),
     m_y(y),
-    m_container_dimension(container_dimension),
+    m_container_dimension(shape_size),
     m_shape(shape)
   {
   }
@@ -35,13 +35,17 @@ public:
 
   const bool hits_shape(const int y, const int x)
   {
-    return m_shape[(m_container_dimension - y) - 1][x] != BLANK;
+    const byte load = m_shape[y];
+
+    Serial.print("x: ");
+    Serial.println(load);
+    return load & (1 << (7 - x));
   }
 private:
   int m_x;
   int m_y;
   const int m_container_dimension;
-  const char** m_shape = NULL;
+  byte* const m_shape;
 
   static const char BLANK = ' ';
 };
