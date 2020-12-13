@@ -141,9 +141,6 @@ void clear_peice()
 
   for (int y_to_test = peice.y(); y_to_test < (peice.y() + peice.height()) && y_to_test < LED_ROWS; ++y_to_test) {
     for (int x_to_test = peice.x(); x_to_test < (peice.x() + peice.width()) && x_to_test < LED_COLS; ++x_to_test) {
-
-        //  && peice.hits_shape(y - peice.y(), x - peice.x())
-
         robo_matrix.set_led_on(x_to_test, y_to_test, false);
     }
   }
