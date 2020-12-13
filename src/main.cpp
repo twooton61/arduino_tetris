@@ -11,8 +11,13 @@
 #include <Robo/Matrix.h>
 #include <Robo/IRReceiver.h>
 #include <Robo/Button.h>
+#include <Tetris/IPeice.h>
+#include <Tetris/JPeice.h>
 #include <Tetris/LPeice.h>
+#include <Tetris/SPeice.h>
 #include <Tetris/SquarePeice.h>
+#include <Tetris/TPeice.h>
+#include <Tetris/ZPeice.h>
 
 #ifdef ROBO_DEBUGGER
 #include <avr8-stub.h>
@@ -49,7 +54,7 @@ byte dot_pile[LED_ROWS] = {
   0b10000101
 };
 
-Tetris::LPeice* active_peice = new Tetris::LPeice(0, LED_ROWS);
+Tetris::Peice* active_peice = NULL;
 void clear_peice(const Tetris::Peice& peice);
 void draw_peice(const Tetris::Peice& peice);
 void draw_dot_pile(byte* dote_pile);
@@ -76,7 +81,31 @@ void setup()
 void loop()
 {
   if (active_peice == NULL && !game_over) {
-    active_peice = new Tetris::LPeice(0, LED_ROWS);
+    static const int TOTAL_POSSIBLE_PEICES = 7;
+    switch (random(0, TOTAL_POSSIBLE_PEICES - 1)){
+      case 0:
+        active_peice = new Tetris::SquarePeice(0, LED_ROWS);
+        break;
+      case 1:
+        active_peice = new Tetris::IPeice(0, LED_ROWS);
+        break;
+      case 2:
+        active_peice = new Tetris::JPeice(0, LED_ROWS);
+        break;
+      case 3:
+        active_peice = new Tetris::LPeice(0, LED_ROWS);
+        break;
+      case 4:
+        active_peice = new Tetris::SPeice(0, LED_ROWS);
+        break;
+      case 5:
+        active_peice = new Tetris::TPeice(0, LED_ROWS);
+        break;
+      case 6:
+        active_peice = new Tetris::ZPeice(0, LED_ROWS);
+        break;
+
+    }
   }
 
   Tetris::Peice& peice = *active_peice;
@@ -219,7 +248,7 @@ void clear_peice(const Tetris::Peice& peice)
 
   for (int y = active_peice->y(); y < (active_peice->y() + active_peice->height()) && y < LED_ROWS; ++y) {
     for (int x = active_peice->x(); x < (active_peice->x() + active_peice->width()) && x < LED_COLS; ++x) {
-        robo_matrix.set_led_on(x, y, false);
+      robo_matrix.set_led_on(x, y, false);
     }
   }
 }
