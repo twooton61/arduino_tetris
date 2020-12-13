@@ -71,6 +71,8 @@ void setup()
   debug_init();
   #endif
 
+  randomSeed(analogRead(0));
+
   Log::init();
 
   robo_brain.setup();
