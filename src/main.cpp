@@ -55,7 +55,7 @@ void clear_peice();
 void draw_dot_pile();
 void draw_peice();
 
-int period = 300;
+int period = 500;
 unsigned long time_now = 0;
 
 void setup()
@@ -78,7 +78,6 @@ void loop()
 
     robo_ir_receiver.resume();
   }
-
 
   if (millis() >= time_now + period){
     time_now += period;
@@ -111,22 +110,7 @@ void loop()
   }
 }
 
-void clear_peice()
-{
-  if (peice.y()>= 0) {
-    for (int y = peice.y(); y < LED_ROWS; ++y) {
-      for (int x = peice.x(); x < LED_COLS; ++x) {
-        if (
-          (x >= peice.x() && x <= (peice.x() + (peice.width() - 1))) &&
-          (y >= peice.y() && y <= (peice.y()+ (peice.height() - 1))) &&
-          peice.hits_shape(y - peice.y(), x - peice.x())
-        ) {
-          robo_matrix.set_led_on(x, y, false);
-        }
-      }
-    }
-  }
-}
+
 
 void draw_dot_pile()
 {
@@ -149,18 +133,28 @@ void draw_dot_pile()
   }
 }
 
+void clear_peice()
+{
+  if (peice.y() < 0) {
+    return;
+  }
+
+  for (int y_to_test = peice.y(); y_to_test < (peice.y() + peice.height()) && y_to_test < LED_ROWS; ++y_to_test) {
+    for (int x_to_test = peice.x(); x_to_test < (peice.x() + peice.width()) && x_to_test < LED_COLS; ++x_to_test) {
+
+        //  && peice.hits_shape(y - peice.y(), x - peice.x())
+
+        robo_matrix.set_led_on(x_to_test, y_to_test, false);
+    }
+  }
+}
+
 void draw_peice()
 {
-  if (peice.y()>= 0) {
-    for (int y = peice.y(); y < LED_ROWS; ++y) {
-      for (int x = peice.x(); x < LED_COLS; ++x) {
-        if (
-          (x >= peice.x() && x <= (peice.x() + (peice.width() - 1))) &&
-          (y >= peice.y() && y <= (peice.y()+ (peice.height() - 1))) &&
-          peice.hits_shape(y - peice.y(), x - peice.x())
-        ) {
-          robo_matrix.set_led_on(x, y, true);
-        }
+  for (int y_to_test = peice.y(); y_to_test < (peice.y() + peice.height()) && y_to_test < LED_ROWS; ++y_to_test) {
+    for (int x_to_test = peice.x(); x_to_test < (peice.x() + peice.width()) && x_to_test < LED_COLS; ++x_to_test) {
+      if (peice.hits_shape(y_to_test - peice.y(), x_to_test - peice.x())) {
+        robo_matrix.set_led_on(x_to_test, y_to_test, true);
       }
     }
   }

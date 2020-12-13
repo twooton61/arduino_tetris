@@ -13,7 +13,6 @@ public:
   LPeice(const int x, const int y) :
     Peice(x, y, l_peice, CONTAINER_DIMENSION)
   {
-    l_peice[0] = 0b11110000;
   }
 private:
   static const int CONTAINER_DIMENSION = 3;

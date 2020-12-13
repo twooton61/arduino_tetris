@@ -35,7 +35,8 @@ public:
 
   const bool hits_shape(const int y, const int x)
   {
-    const byte col = m_shape[y];
+    // height() - 1 to flip the shape
+    const byte col = m_shape[(height() - 1) - y];
 
     // if bit is set on column
     return col & (1 << (7 - x));
