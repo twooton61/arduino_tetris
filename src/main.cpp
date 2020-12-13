@@ -149,7 +149,7 @@ void loop()
         active_peice->x(active_peice->x() + 1);
       }
 
-      if (left_button.is_pressed()) {
+      if (active_peice->x() != 0 && left_button.is_pressed()) {
         active_peice->x(active_peice->x() - 1);
       }
 
@@ -274,7 +274,8 @@ void draw(byte* shape, const int size, const int y_offset = 0)
       const byte col = shape[size - y - 1];
 
       // if bit is set on column
-      robo_matrix.set_led_on(x, y + y_offset, col & (1 << (7 - x)));
+      const bool hit = col & (1 << (7 - x));
+      robo_matrix.set_led_on(x, y + y_offset, hit);
     }
   }
 }
