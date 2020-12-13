@@ -42,11 +42,11 @@ const int LED_COLS = LED_COLS_PER_MATRIX;
 const int LED_ROWS = LEDS_TO_USE_FOR_BOARD * LED_ROWS_PER_MATRIX;
 
 // upside down
-bool dot_pile[LED_ROWS][LED_COLS] = {
-  { 1, 1, 0, 0, 0, 1, 1, 1 },
-  { 1, 1, 0, 0, 0, 1, 0, 0 },
-  { 0, 0, 0, 0, 0, 1, 0, 0 },
-  { 0, 0, 0, 0, 0, 1, 0, 0 }
+byte dot_pile[LED_ROWS] = {
+  0b11000111,
+  0b11000100,
+  0b00000100,
+  0b00000100
 };
 
 Tetris::LPeice peice(0, LED_ROWS);
@@ -116,10 +116,12 @@ void draw_dot_pile()
 {
   for (int y = 0; y < LED_ROWS; ++y) {
     bool row_has_dot = false;
+
     for (int x = 0; x < LED_COLS; ++x) {
-      if (
-        dot_pile[y][x]
-      ) {
+      const byte col = dot_pile[y];
+
+      // if bit is set on column
+      if (col & (1 << (7 - x))) {
         robo_matrix.set_led_on(x, y, true);
 
         row_has_dot = true;
