@@ -62,7 +62,7 @@ bool peice_will_collide_with_dot_pile(Tetris::Peice& peice, byte* dote_pile);
 void commit_peice_to_dot_pile(Tetris::Peice& peice, byte* dote_pile);
 
 bool game_over = false;
-int period = 100;
+int period = 10;
 unsigned long time_now = 0;
 
 void setup()
@@ -80,7 +80,13 @@ void setup()
 
 void loop()
 {
-  if (active_peice == NULL && !game_over) {
+  if (game_over) {
+    Serial.println("Game Over");
+    delay(1000);
+    return;
+  }
+
+  if (active_peice == NULL) {
     static const int TOTAL_POSSIBLE_PEICES = 7;
     switch (random(0, TOTAL_POSSIBLE_PEICES - 1)){
       case 0:
@@ -141,6 +147,10 @@ void loop()
       if (active_peice->y() > 0){
         if (peice_will_collide_with_dot_pile(peice, dot_pile)){
 
+          if (active_peice->y() >= LED_ROWS - 1) {
+            game_over = true;
+          }
+
           commit_peice_to_dot_pile(peice, dot_pile);
         }
         else {
@@ -190,7 +200,7 @@ void commit_peice_to_dot_pile(Tetris::Peice& peice, byte* dote_pile)
   for (int y = active_peice->y(); y < (active_peice->y() + active_peice->height()) && y < LED_ROWS; ++y) {
     for (int x = active_peice->x(); x < (active_peice->x() + active_peice->width()) && x < LED_COLS; ++x) {
       if (active_peice->hits_shape(y - active_peice->y(), x - active_peice->x())) {
-        if(y >= LED_ROWS) {
+        if (y >= LED_ROWS) {
           game_over = true;
           return;
         }
