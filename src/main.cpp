@@ -51,11 +51,10 @@ byte dot_pile[LED_ROWS] = {
 
 Tetris::LPeice peice(0, LED_ROWS);
 
-void clear_peice();
-void draw_dot_pile();
-void draw_peice();
-bool peice_will_collide_with_dot_pile();
-
+void clear_peice(const Tetris::Peice& peice);
+void draw_peice(const Tetris::Peice& peice);
+void draw_dot_pile(byte* dote_pile);
+bool peice_will_collide_with_dot_pile(Tetris::Peice& peice, byte* dote_pile);
 int period = 100;
 unsigned long time_now = 0;
 
@@ -83,7 +82,7 @@ void loop()
   if (millis() >= time_now + period){
     time_now += period;
 
-    clear_peice();
+    clear_peice(peice);
 
     if (right_button.is_pressed()) {
       peice.x(peice.x() + 1);
@@ -101,23 +100,23 @@ void loop()
       peice.y(peice.y() + 1);
     }
 
-    if (peice.y() > 0 && !peice_will_collide_with_dot_pile()){
+    if (peice.y() > 0){
+      if (peice_will_collide_with_dot_pile(peice, dot_pile)){
 
-      Serial.println("Moving");
-      Serial.print("was: ");
-      Serial.println(peice.y());
-      peice.y(peice.y() - 1);
-      Serial.print("now: ");
-      Serial.println(peice.y());
+        // commit_peice_to_dot_pile();
+      }
+      else {
+        peice.y(peice.y() - 1);
+      }
     }
 
-    draw_peice();
+    draw_peice(peice);
 
-    draw_dot_pile();
+    draw_dot_pile(dot_pile);
   }
 }
 
-bool peice_will_collide_with_dot_pile()
+bool peice_will_collide_with_dot_pile(Tetris::Peice& peice, byte* dote_pile)
 {
   for (int y = peice.next_y(); y < (peice.next_y() + peice.height()) && y < LED_ROWS; ++y) {
     for (int x = peice.x(); x < (peice.x() + peice.width()) && x < LED_COLS; ++x) {
@@ -141,7 +140,7 @@ bool peice_will_collide_with_dot_pile()
   return false;
 }
 
-void draw_dot_pile()
+void draw_dot_pile(byte* dote_pile)
 {
   for (int y = 0; y < LED_ROWS; ++y) {
     bool row_has_dot = false;
@@ -164,7 +163,7 @@ void draw_dot_pile()
   }
 }
 
-void clear_peice()
+void clear_peice(const Tetris::Peice& peice)
 {
   if (peice.y() < 0) {
     return;
@@ -177,7 +176,7 @@ void clear_peice()
   }
 }
 
-void draw_peice()
+void draw_peice(const Tetris::Peice& peice)
 {
   for (int y = peice.y(); y < (peice.y() + peice.height()) && y < LED_ROWS; ++y) {
     for (int x = peice.x(); x < (peice.x() + peice.width()) && x < LED_COLS; ++x) {
