@@ -79,9 +79,6 @@ void loop()
     robo_ir_receiver.resume();
   }
 
-  draw_peice();
-
-  draw_dot_pile();
 
   if (millis() >= time_now + period){
     time_now += period;
@@ -107,6 +104,10 @@ void loop()
     if (peice.y() > 0) {
       peice.y(peice.y() - 1);
     }
+
+    draw_peice();
+
+    draw_dot_pile();
   }
 }
 
