@@ -23,6 +23,11 @@ public:
   GET_SET(int, x)
   GET_SET(int, y)
 
+  int next_y() const
+  {
+    return m_y - 1;
+  }
+
   int height() const
   {
     return m_container_dimension;

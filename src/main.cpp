@@ -54,8 +54,9 @@ Tetris::LPeice peice(0, LED_ROWS);
 void clear_peice();
 void draw_dot_pile();
 void draw_peice();
+bool peice_will_collide_with_dot_pile();
 
-int period = 500;
+int period = 100;
 unsigned long time_now = 0;
 
 void setup()
@@ -100,14 +101,44 @@ void loop()
       peice.y(peice.y() + 1);
     }
 
-    if (peice.y() > 0) {
+    if (peice.y() > 0 && !peice_will_collide_with_dot_pile()){
+
+      Serial.println("Moving");
+      Serial.print("was: ");
+      Serial.println(peice.y());
       peice.y(peice.y() - 1);
+      Serial.print("now: ");
+      Serial.println(peice.y());
     }
 
     draw_peice();
 
     draw_dot_pile();
   }
+}
+
+bool peice_will_collide_with_dot_pile()
+{
+  for (int y = peice.next_y(); y < (peice.next_y() + peice.height()) && y < LED_ROWS; ++y) {
+    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < LED_COLS; ++x) {
+      if (peice.hits_shape(y - peice.next_y(), x - peice.x())) {
+        const byte col = dot_pile[y];
+
+        // if bit is set on column
+        if (col & (1 << (7 - x))) {
+          Serial.println("Collides at:");
+          Serial.print("y: ");
+          Serial.println(y);
+
+          Serial.print("x: ");
+          Serial.println(x);
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
 }
 
 void draw_dot_pile()
@@ -139,19 +170,19 @@ void clear_peice()
     return;
   }
 
-  for (int y_to_test = peice.y(); y_to_test < (peice.y() + peice.height()) && y_to_test < LED_ROWS; ++y_to_test) {
-    for (int x_to_test = peice.x(); x_to_test < (peice.x() + peice.width()) && x_to_test < LED_COLS; ++x_to_test) {
-        robo_matrix.set_led_on(x_to_test, y_to_test, false);
+  for (int y = peice.y(); y < (peice.y() + peice.height()) && y < LED_ROWS; ++y) {
+    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < LED_COLS; ++x) {
+        robo_matrix.set_led_on(x, y, false);
     }
   }
 }
 
 void draw_peice()
 {
-  for (int y_to_test = peice.y(); y_to_test < (peice.y() + peice.height()) && y_to_test < LED_ROWS; ++y_to_test) {
-    for (int x_to_test = peice.x(); x_to_test < (peice.x() + peice.width()) && x_to_test < LED_COLS; ++x_to_test) {
-      if (peice.hits_shape(y_to_test - peice.y(), x_to_test - peice.x())) {
-        robo_matrix.set_led_on(x_to_test, y_to_test, true);
+  for (int y = peice.y(); y < (peice.y() + peice.height()) && y < LED_ROWS; ++y) {
+    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < LED_COLS; ++x) {
+      if (peice.hits_shape(y - peice.y(), x - peice.x())) {
+        robo_matrix.set_led_on(x, y, true);
       }
     }
   }
