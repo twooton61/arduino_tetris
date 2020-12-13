@@ -16,10 +16,10 @@ public:
 private:
   static const int CONTAINER_DIMENSION = 4;
   byte i_peice[CONTAINER_DIMENSION] = {
-    0b1000000,
-    0b1000000,
-    0b1000000,
-    0b1000000
+    0b10000000,
+    0b10000000,
+    0b10000000,
+    0b10000000
   };
 };
 }  // namespace Tetris
