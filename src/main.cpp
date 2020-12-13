@@ -110,8 +110,6 @@ void loop()
   }
 }
 
-
-
 void draw_dot_pile()
 {
   for (int y = 0; y < LED_ROWS; ++y) {
