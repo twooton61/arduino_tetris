@@ -63,7 +63,7 @@ bool peice_will_collide_with_dot_pile(Tetris::Peice& peice, byte* dote_pile);
 void commit_peice_to_dot_pile(Tetris::Peice& peice, byte* dote_pile);
 
 bool game_over = false;
-int period = 10;
+int period = 300;
 unsigned long time_now = 0;
 
 void setup()
@@ -105,7 +105,10 @@ void loop()
 
   if (active_peice == NULL) {
     static const int TOTAL_POSSIBLE_PEICES = 7;
-    switch (random(0, TOTAL_POSSIBLE_PEICES - 1)){
+    const int peice_index = random(0, TOTAL_POSSIBLE_PEICES - 1);
+    // Serial.print("Index: ");
+    // Serial.println(peice_index);
+    switch (peice_index){
       case 0:
         active_peice = new Tetris::SquarePeice(0, BOARD_ROWS);
         break;
@@ -158,7 +161,7 @@ void loop()
       }
 
       if (up_button.is_pressed()) {
-        active_peice->y(active_peice->y() + 1);
+        active_peice->rotate();
       }
 
       if (active_peice->y() > 0){

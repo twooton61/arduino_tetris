@@ -16,10 +16,23 @@ public:
   }
 private:
   static const int CONTAINER_DIMENSION = 3;
-  byte l_peice[CONTAINER_DIMENSION] = {
+  byte l_peice[CONTAINER_DIMENSION * ROTATION_PHASES] = {
     0b10000000,
     0b10000000,
-    0b11000000
+    0b11000000,
+
+    0b00000000,
+    0b00100000,
+    0b11100000,
+
+    0b01100000,
+    0b00100000,
+    0b00100000,
+
+
+    0b11100000,
+    0b10000000,
+    0b00000000
   };
 };
 }  // namespace Tetris

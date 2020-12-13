@@ -10,16 +10,31 @@ class IPeice : public Peice
 {
 public:
   IPeice(const int x, const int y) :
-    Peice(x, y, i_peice, CONTAINER_DIMENSION)
+    Peice(x, y, peice, CONTAINER_DIMENSION)
   {
   }
 private:
   static const int CONTAINER_DIMENSION = 4;
-  byte i_peice[CONTAINER_DIMENSION] = {
+  byte peice[CONTAINER_DIMENSION * ROTATION_PHASES] = {
     0b10000000,
     0b10000000,
     0b10000000,
-    0b10000000
+    0b10000000,
+
+    0b00000000,
+    0b00000000,
+    0b11110000,
+    0b00000000,
+
+    0b00010000,
+    0b00010000,
+    0b00010000,
+    0b00010000,
+
+    0b00000000,
+    0b11110000,
+    0b00000000,
+    0b00000000
   };
 };
 }  // namespace Tetris
