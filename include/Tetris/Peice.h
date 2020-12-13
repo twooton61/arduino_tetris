@@ -38,7 +38,13 @@ public:
     return m_container_dimension;
   }
 
-  const bool hits_shape(const int y, const int x)
+  byte row(const int y) const
+  {
+    // height() - 1 to flip the shape
+    return m_shape[(height() - 1) - y];
+  }
+
+  bool hits_shape(const int y, const int x) const
   {
     // height() - 1 to flip the shape
     const byte col = m_shape[(height() - 1) - y];
@@ -46,6 +52,7 @@ public:
     // if bit is set on column
     return col & (1 << (7 - x));
   }
+
 private:
   int m_x;
   int m_y;

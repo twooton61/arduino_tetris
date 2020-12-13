@@ -44,17 +44,19 @@ const int LED_ROWS = LEDS_TO_USE_FOR_BOARD * LED_ROWS_PER_MATRIX;
 // upside down
 byte dot_pile[LED_ROWS] = {
   0b11000111,
-  0b11000100,
-  0b00000100,
-  0b00000100
+  0b11000101,
+  0b10000101,
+  0b10000101
 };
 
-Tetris::LPeice peice(0, LED_ROWS);
-
+Tetris::LPeice* active_peice = new Tetris::LPeice(0, LED_ROWS);
 void clear_peice(const Tetris::Peice& peice);
 void draw_peice(const Tetris::Peice& peice);
 void draw_dot_pile(byte* dote_pile);
 bool peice_will_collide_with_dot_pile(Tetris::Peice& peice, byte* dote_pile);
+void commit_peice_to_dot_pile(Tetris::Peice& peice, byte* dote_pile);
+
+bool game_over = false;
 int period = 100;
 unsigned long time_now = 0;
 
@@ -73,6 +75,12 @@ void setup()
 
 void loop()
 {
+  if (active_peice == NULL && !game_over) {
+    active_peice = new Tetris::LPeice(0, LED_ROWS);
+  }
+
+  Tetris::Peice& peice = *active_peice;
+
   if (robo_ir_receiver.detect_signal()) {
     Log::println("signal detected");
 
@@ -82,35 +90,41 @@ void loop()
   if (millis() >= time_now + period){
     time_now += period;
 
-    clear_peice(peice);
+    if (active_peice != NULL) {
+      clear_peice(peice);
 
-    if (right_button.is_pressed()) {
-      peice.x(peice.x() + 1);
-    }
+      if (right_button.is_pressed()) {
+        active_peice->x(active_peice->x() + 1);
+      }
 
-    if (left_button.is_pressed()) {
-      peice.x(peice.x() - 1);
-    }
+      if (left_button.is_pressed()) {
+        active_peice->x(active_peice->x() - 1);
+      }
 
-    if (down_button.is_pressed()) {
-      peice.y(peice.y() - 1);
-    }
+      if (down_button.is_pressed()) {
+        active_peice->y(active_peice->y() - 1);
+      }
 
-    if (up_button.is_pressed()) {
-      peice.y(peice.y() + 1);
-    }
+      if (up_button.is_pressed()) {
+        active_peice->y(active_peice->y() + 1);
+      }
 
-    if (peice.y() > 0){
-      if (peice_will_collide_with_dot_pile(peice, dot_pile)){
+      if (active_peice->y() > 0){
+        if (peice_will_collide_with_dot_pile(peice, dot_pile)){
 
-        // commit_peice_to_dot_pile();
+          commit_peice_to_dot_pile(peice, dot_pile);
+        }
+        else {
+          active_peice->y(active_peice->y() - 1);
+        }
       }
       else {
-        peice.y(peice.y() - 1);
+        // row hit bottom
+        commit_peice_to_dot_pile(peice, dot_pile);
       }
-    }
 
-    draw_peice(peice);
+      draw_peice(peice);
+    }
 
     draw_dot_pile(dot_pile);
   }
@@ -118,19 +132,19 @@ void loop()
 
 bool peice_will_collide_with_dot_pile(Tetris::Peice& peice, byte* dote_pile)
 {
-  for (int y = peice.next_y(); y < (peice.next_y() + peice.height()) && y < LED_ROWS; ++y) {
-    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < LED_COLS; ++x) {
-      if (peice.hits_shape(y - peice.next_y(), x - peice.x())) {
+  for (int y = active_peice->next_y(); y < (active_peice->next_y() + active_peice->height()) && y < LED_ROWS; ++y) {
+    for (int x = active_peice->x(); x < (active_peice->x() + active_peice->width()) && x < LED_COLS; ++x) {
+      if (active_peice->hits_shape(y - active_peice->next_y(), x - active_peice->x())) {
         const byte col = dot_pile[y];
 
         // if bit is set on column
         if (col & (1 << (7 - x))) {
-          Serial.println("Collides at:");
-          Serial.print("y: ");
-          Serial.println(y);
+          // Serial.println("Collides at:");
+          // Serial.print("y: ");
+          // Serial.println(y);
 
-          Serial.print("x: ");
-          Serial.println(x);
+          // Serial.print("x: ");
+          // Serial.println(x);
           return true;
         }
       }
@@ -138,6 +152,40 @@ bool peice_will_collide_with_dot_pile(Tetris::Peice& peice, byte* dote_pile)
   }
 
   return false;
+}
+
+void commit_peice_to_dot_pile(Tetris::Peice& peice, byte* dote_pile)
+{
+  // Serial.println("!!!!!!!!!!! STARTING COMMIT");
+
+  for (int y = active_peice->y(); y < (active_peice->y() + active_peice->height()) && y < LED_ROWS; ++y) {
+    for (int x = active_peice->x(); x < (active_peice->x() + active_peice->width()) && x < LED_COLS; ++x) {
+      if (active_peice->hits_shape(y - active_peice->y(), x - active_peice->x())) {
+        if(y >= LED_ROWS) {
+          game_over = true;
+          return;
+        }
+        const byte dot_pile_row = dot_pile[y];
+        // Serial.println(String("Dot pile at: ") + String(y));
+        // Serial.println(dot_pile_row, BIN);
+
+        // Serial.println("Peice row:");
+        // Serial.println(active_peice_row_shifted, BIN);
+
+        // draw the shape adjusted for the x position on board
+        dot_pile[y] = dot_pile_row | (0b000000001 << (7 - x));
+        // Serial.println("Is now:");
+
+        // Serial.println(dot_pile[y], BIN);
+        // Serial.println("==========================");
+      }
+    }
+  }
+
+  delete active_peice;
+  active_peice = NULL;
+
+  // Serial.println("!!!!!!!!!!! ENDING COMMIT");
 }
 
 void draw_dot_pile(byte* dote_pile)
@@ -165,12 +213,12 @@ void draw_dot_pile(byte* dote_pile)
 
 void clear_peice(const Tetris::Peice& peice)
 {
-  if (peice.y() < 0) {
+  if (active_peice->y() < 0) {
     return;
   }
 
-  for (int y = peice.y(); y < (peice.y() + peice.height()) && y < LED_ROWS; ++y) {
-    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < LED_COLS; ++x) {
+  for (int y = active_peice->y(); y < (active_peice->y() + active_peice->height()) && y < LED_ROWS; ++y) {
+    for (int x = active_peice->x(); x < (active_peice->x() + active_peice->width()) && x < LED_COLS; ++x) {
         robo_matrix.set_led_on(x, y, false);
     }
   }
@@ -178,9 +226,9 @@ void clear_peice(const Tetris::Peice& peice)
 
 void draw_peice(const Tetris::Peice& peice)
 {
-  for (int y = peice.y(); y < (peice.y() + peice.height()) && y < LED_ROWS; ++y) {
-    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < LED_COLS; ++x) {
-      if (peice.hits_shape(y - peice.y(), x - peice.x())) {
+  for (int y = active_peice->y(); y < (active_peice->y() + active_peice->height()) && y < LED_ROWS; ++y) {
+    for (int x = active_peice->x(); x < (active_peice->x() + active_peice->width()) && x < LED_COLS; ++x) {
+      if (active_peice->hits_shape(y - active_peice->y(), x - active_peice->x())) {
         robo_matrix.set_led_on(x, y, true);
       }
     }
