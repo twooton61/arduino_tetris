@@ -15,7 +15,16 @@ public:
   }
 private:
   static const int CONTAINER_DIMENSION = 2;
-  byte square_peice[CONTAINER_DIMENSION] = {
+  byte square_peice[CONTAINER_DIMENSION * ROTATION_PHASES] = {
+    0b11000000,
+    0b11000000,
+
+    0b11000000,
+    0b11000000,
+
+    0b11000000,
+    0b11000000,
+
     0b11000000,
     0b11000000
   };
