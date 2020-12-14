@@ -161,6 +161,7 @@ void loop()
         peice.rotate();
       }
 
+      bool peice_commited = false;
       if (peice.y() > 0){
         if (peice_will_collide_with_dot_pile(peice, dot_pile)){
 
@@ -169,6 +170,7 @@ void loop()
           }
 
           commit_peice_to_dot_pile(peice, dot_pile);
+          peice_commited = true;
         }
         else {
           peice.y(peice.y() - 1);
@@ -177,9 +179,12 @@ void loop()
       else {
         // row hit bottom
         commit_peice_to_dot_pile(peice, dot_pile);
+        peice_commited = true;
       }
 
-      draw_peice(peice);
+      if(!peice_commited) {
+        draw_peice(peice);
+      }
     }
 
     draw_dot_pile(dot_pile);
@@ -212,13 +217,13 @@ void commit_peice_to_dot_pile(Tetris::Peice& peice, byte* dote_pile)
           game_over = true;
           return;
         }
-        const byte dot_pile_row = dot_pile[y];
 
-        dot_pile[y] = dot_pile_row | (0b000000001 << (7 - x));
-
+        dot_pile[y] |= 1 << (7 - x);
       }
     }
   }
+
+  clear_peice(peice);
 
   delete active_peice;
   active_peice = NULL;
