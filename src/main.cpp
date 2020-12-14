@@ -106,8 +106,6 @@ void loop()
   if (active_peice == NULL) {
     static const int TOTAL_POSSIBLE_PEICES = 7;
     const int peice_index = random(0, TOTAL_POSSIBLE_PEICES - 1);
-    // Serial.print("Index: ");
-    // Serial.println(peice_index);
     switch (peice_index){
       case 0:
         active_peice = new Tetris::SquarePeice(0, BOARD_ROWS);
@@ -130,7 +128,6 @@ void loop()
       case 6:
         active_peice = new Tetris::ZPeice(0, BOARD_ROWS);
         break;
-
     }
   }
 
@@ -149,32 +146,32 @@ void loop()
       clear_peice(peice);
 
       if (right_button.is_pressed()) {
-        active_peice->x(active_peice->x() + 1);
+        peice.x(peice.x() + 1);
       }
 
-      if (active_peice->x() != 0 && left_button.is_pressed()) {
-        active_peice->x(active_peice->x() - 1);
+      if (peice.x() != 0 && left_button.is_pressed()) {
+        peice.x(peice.x() - 1);
       }
 
       if (down_button.is_pressed()) {
-        active_peice->y(active_peice->y() - 1);
+        peice.y(peice.y() - 1);
       }
 
       if (up_button.is_pressed()) {
-        active_peice->rotate();
+        peice.rotate();
       }
 
-      if (active_peice->y() > 0){
+      if (peice.y() > 0){
         if (peice_will_collide_with_dot_pile(peice, dot_pile)){
 
-          if (active_peice->y() >= BOARD_ROWS - 1) {
+          if (peice.y() >= BOARD_ROWS - 1) {
             game_over = true;
           }
 
           commit_peice_to_dot_pile(peice, dot_pile);
         }
         else {
-          active_peice->y(active_peice->y() - 1);
+          peice.y(peice.y() - 1);
         }
       }
       else {
@@ -191,19 +188,12 @@ void loop()
 
 bool peice_will_collide_with_dot_pile(Tetris::Peice& peice, byte* dote_pile)
 {
-  for (int y = active_peice->next_y(); y < (active_peice->next_y() + active_peice->height()) && y < BOARD_ROWS; ++y) {
-    for (int x = active_peice->x(); x < (active_peice->x() + active_peice->width()) && x < BOARD_COLS; ++x) {
-      if (active_peice->hits_shape(y - active_peice->next_y(), x - active_peice->x())) {
-        const byte col = dot_pile[y];
+  for (int y = peice.next_y(); y < (peice.next_y() + peice.height()) && y < BOARD_ROWS; ++y) {
+    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < BOARD_COLS; ++x) {
+      if (peice.hits_shape(y - peice.next_y(), x - peice.x())) {
+        const byte row_value = dot_pile[y];
 
-        // if bit is set on column
-        if (col & (1 << (7 - x))) {
-          // Serial.println("Collides at:");
-          // Serial.print("y: ");
-          // Serial.println(y);
-
-          // Serial.print("x: ");
-          // Serial.println(x);
+        if (row_value & (1 << (7 - x))) {
           return true;
         }
       }
@@ -215,36 +205,23 @@ bool peice_will_collide_with_dot_pile(Tetris::Peice& peice, byte* dote_pile)
 
 void commit_peice_to_dot_pile(Tetris::Peice& peice, byte* dote_pile)
 {
-  // Serial.println("!!!!!!!!!!! STARTING COMMIT");
-
-  for (int y = active_peice->y(); y < (active_peice->y() + active_peice->height()) && y < BOARD_ROWS; ++y) {
-    for (int x = active_peice->x(); x < (active_peice->x() + active_peice->width()) && x < BOARD_COLS; ++x) {
-      if (active_peice->hits_shape(y - active_peice->y(), x - active_peice->x())) {
+  for (int y = peice.y(); y < (peice.y() + peice.height()) && y < BOARD_ROWS; ++y) {
+    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < BOARD_COLS; ++x) {
+      if (peice.hits_shape(y - peice.y(), x - peice.x())) {
         if (y >= BOARD_ROWS) {
           game_over = true;
           return;
         }
         const byte dot_pile_row = dot_pile[y];
-        // Serial.println(String("Dot pile at: ") + String(y));
-        // Serial.println(dot_pile_row, BIN);
 
-        // Serial.println("Peice row:");
-        // Serial.println(active_peice_row_shifted, BIN);
-
-        // draw the shape adjusted for the x position on board
         dot_pile[y] = dot_pile_row | (0b000000001 << (7 - x));
-        // Serial.println("Is now:");
 
-        // Serial.println(dot_pile[y], BIN);
-        // Serial.println("==========================");
       }
     }
   }
 
   delete active_peice;
   active_peice = NULL;
-
-  // Serial.println("!!!!!!!!!!! ENDING COMMIT");
 }
 
 void draw_dot_pile(byte* dote_pile)
@@ -285,12 +262,12 @@ void draw(byte* shape, const int size, const int y_offset = 0)
 
 void clear_peice(const Tetris::Peice& peice)
 {
-  if (active_peice->y() < 0) {
+  if (peice.y() < 0) {
     return;
   }
 
-  for (int y = active_peice->y(); y < (active_peice->y() + active_peice->height()) && y < BOARD_ROWS; ++y) {
-    for (int x = active_peice->x(); x < (active_peice->x() + active_peice->width()) && x < BOARD_COLS; ++x) {
+  for (int y = peice.y(); y < (peice.y() + peice.height()) && y < BOARD_ROWS; ++y) {
+    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < BOARD_COLS; ++x) {
       robo_matrix.set_led_on(x, y, false);
     }
   }
@@ -298,9 +275,9 @@ void clear_peice(const Tetris::Peice& peice)
 
 void draw_peice(const Tetris::Peice& peice)
 {
-  for (int y = active_peice->y(); y < (active_peice->y() + active_peice->height()) && y < BOARD_ROWS; ++y) {
-    for (int x = active_peice->x(); x < (active_peice->x() + active_peice->width()) && x < BOARD_COLS; ++x) {
-      if (active_peice->hits_shape(y - active_peice->y(), x - active_peice->x())) {
+  for (int y = peice.y(); y < (peice.y() + peice.height()) && y < BOARD_ROWS; ++y) {
+    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < BOARD_COLS; ++x) {
+      if (peice.hits_shape(y - peice.y(), x - peice.x())) {
         robo_matrix.set_led_on(x, y, true);
       }
     }
