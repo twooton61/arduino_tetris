@@ -25,9 +25,9 @@ public:
   GET_SET(int, x)
   GET_SET(int, y)
 
-  int next_y() const
+  int next_y(const int y_drop = 1) const
   {
-    return m_y - 1;
+    return m_y - y_drop;
   }
 
   int height() const

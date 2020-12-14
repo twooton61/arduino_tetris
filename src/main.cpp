@@ -59,7 +59,7 @@ void clear_peice(const Tetris::Peice& peice);
 void draw_peice(const Tetris::Peice& peice);
 void draw_dot_pile(byte* dote_pile);
 void draw(byte* shape, const int size, const int y_offset);
-bool peice_will_collide_with_dot_pile(Tetris::Peice& peice, byte* dote_pile);
+bool peice_will_collide_with_dot_pile(Tetris::Peice& peice, byte* dote_pile, int y_drop);
 void commit_peice_to_dot_pile(Tetris::Peice& peice, byte* dote_pile);
 
 bool game_over = false;
@@ -153,8 +153,16 @@ void loop()
         peice.x(peice.x() - 1);
       }
 
+      bool drop_more = true;
       if (down_button.is_pressed()) {
-        peice.y(peice.y() - 1);
+        int y_drop = 1;
+        while (!peice_will_collide_with_dot_pile(peice, dot_pile, y_drop)){
+          y_drop++;
+        }
+
+        peice.y(peice.y() - (y_drop - 1));
+
+        drop_more = false;
       }
 
       if (up_button.is_pressed()) {
@@ -163,7 +171,7 @@ void loop()
 
       bool peice_commited = false;
       if (peice.y() > 0){
-        if (peice_will_collide_with_dot_pile(peice, dot_pile)){
+        if (peice_will_collide_with_dot_pile(peice, dot_pile, 1)){
 
           if (peice.y() >= BOARD_ROWS - 1) {
             game_over = true;
@@ -172,7 +180,7 @@ void loop()
           commit_peice_to_dot_pile(peice, dot_pile);
           peice_commited = true;
         }
-        else {
+        else if (drop_more) {
           peice.y(peice.y() - 1);
         }
       }
@@ -191,11 +199,11 @@ void loop()
   }
 }
 
-bool peice_will_collide_with_dot_pile(Tetris::Peice& peice, byte* dote_pile)
+bool peice_will_collide_with_dot_pile(Tetris::Peice& peice, byte* dote_pile, int y_drop)
 {
-  for (int y = peice.next_y(); y < (peice.next_y() + peice.height()) && y < BOARD_ROWS; ++y) {
+  for (int y = peice.next_y(y_drop); y < (peice.next_y(y_drop) + peice.height()) && y < BOARD_ROWS; ++y) {
     for (int x = peice.x(); x < (peice.x() + peice.width()) && x < BOARD_COLS; ++x) {
-      if (peice.hits_shape(y - peice.next_y(), x - peice.x())) {
+      if (peice.hits_shape(y - peice.next_y(y_drop), x - peice.x())) {
         const byte row_value = dot_pile[y];
 
         if (row_value & (1 << (7 - x))) {
