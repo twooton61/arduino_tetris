@@ -223,7 +223,7 @@ void commit_peice_to_dot_pile(Tetris::Peice& peice, byte* dote_pile)
     }
   }
 
-  clear_peice(peice);
+  // clear_peice(peice);
 
   delete active_peice;
   active_peice = NULL;
