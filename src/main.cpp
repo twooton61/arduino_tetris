@@ -182,7 +182,7 @@ void loop()
         peice_commited = true;
       }
 
-      if(!peice_commited) {
+      if (!peice_commited) {
         draw_peice(peice);
       }
     }
