@@ -135,7 +135,7 @@ void loop()
       bool drop_more = true;
       if (down_button.is_pressed()) {
         int y_drop = 1;
-        while (!tetris_board.peice_will_collide_with_dot_pile(peice, y_drop)){
+        while (active_peice->y() - y_drop >= 0 && !tetris_board.peice_will_collide_with_dot_pile(peice, y_drop)){
           y_drop++;
         }
 
