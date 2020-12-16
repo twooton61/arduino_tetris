@@ -39,6 +39,20 @@ void Board::commit_peice_to_dot_pile(Tetris::Peice& peice)
   }
 }
 
+void Board::compact_dot_pile()
+{
+  for (int y = 0; y < ROWS; ++y) {
+    Serial.println("compacting");
+    m_dot_pile[y] = 0;
+  //   m
+  //   for (int x = 0; x < COLS; ++x) {
+  //     if (row == 0b11111111) {
+  //       m_dot_pile[y] |= 1 << (7 - x);
+  //     }
+  //   }
+  }
+}
+
 void Board::draw_dot_pile()
 {
   for (int y = 0; y < ROWS; ++y) {

@@ -171,6 +171,8 @@ void loop()
     if (peice_commited_to_dot_pile) {
       delete active_peice;
       active_peice = NULL;
+
+      // tetris_board.compact_dot_pile();
     }
     else {
       tetris_board.draw_peice(*active_peice);
