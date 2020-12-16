@@ -100,60 +100,12 @@ void loop()
       next_peice = NULL;
     }
     else {
-      static const int TOTAL_POSSIBLE_PEICES = 7;
-      const int peice_index = random(0, TOTAL_POSSIBLE_PEICES - 1);
-      switch (peice_index){
-        case 0:
-          active_peice = new Tetris::SquarePeice(0, Tetris::Board::ROWS);
-          break;
-        case 1:
-          active_peice = new Tetris::IPeice(0, Tetris::Board::ROWS);
-          break;
-        case 2:
-          active_peice = new Tetris::JPeice(0, Tetris::Board::ROWS);
-          break;
-        case 3:
-          active_peice = new Tetris::LPeice(0, Tetris::Board::ROWS);
-          break;
-        case 4:
-          active_peice = new Tetris::SPeice(0, Tetris::Board::ROWS);
-          break;
-        case 5:
-          active_peice = new Tetris::TPeice(0, Tetris::Board::ROWS);
-          break;
-        case 6:
-          active_peice = new Tetris::ZPeice(0, Tetris::Board::ROWS);
-          break;
-      }
+      active_peice = tetris_board.generate_new_peice(0, Tetris::Board::ROWS);
     }
   }
 
   if (next_peice == NULL) {
-    static const int TOTAL_POSSIBLE_PEICES = 7;
-    const int peice_index = random(0, TOTAL_POSSIBLE_PEICES - 1);
-    switch (peice_index){
-      case 0:
-        next_peice = new Tetris::SquarePeice(0, Tetris::Board::ROWS + 2);
-        break;
-      case 1:
-        next_peice = new Tetris::IPeice(0, Tetris::Board::ROWS + 2);
-        break;
-      case 2:
-        next_peice = new Tetris::JPeice(0, Tetris::Board::ROWS + 2);
-        break;
-      case 3:
-        next_peice = new Tetris::LPeice(0, Tetris::Board::ROWS + 2);
-        break;
-      case 4:
-        next_peice = new Tetris::SPeice(0, Tetris::Board::ROWS + 2);
-        break;
-      case 5:
-        next_peice = new Tetris::TPeice(0, Tetris::Board::ROWS + 2);
-        break;
-      case 6:
-        next_peice = new Tetris::ZPeice(0, Tetris::Board::ROWS + 2);
-        break;
-    }
+    next_peice = tetris_board.generate_new_peice(0, Tetris::Board::ROWS + 2);
 
     tetris_board.draw_peice_unbounded(*next_peice);
   }
