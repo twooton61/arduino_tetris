@@ -62,7 +62,7 @@ void Board::draw_dot_pile()
   }
 }
 
-void Board::draw(byte* shape, const int size, const int y_offset = 0)
+void Board::draw(const byte* const shape, const int size, const int y_offset)
 {
   for (int y = 0; y < size; ++y) {
     for (int x = 0; x < COLS; ++x) {

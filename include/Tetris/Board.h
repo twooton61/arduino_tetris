@@ -28,7 +28,7 @@ explicit Board(Robo::Matrix& robo_matrix);
 bool peice_will_collide_with_dot_pile(Peice& peice, int y_drop);
 void commit_peice_to_dot_pile(Peice& peice);
 void draw_dot_pile();
-void draw(byte* shape, const int size, const int y_offset = 0);
+void draw(const byte* const shape, const int size, const int y_offset = 0);
 void clear_peice(const Peice& peice);
 void clear_peice_unbounded(const Peice& peice);
 void draw_peice(const Peice& peice);
