@@ -72,8 +72,6 @@ void setup()
 
 void loop()
 {
-
-
   if (robo_ir_receiver.detect_signal()) {
     Log::println("signal detected");
 
@@ -88,7 +86,7 @@ void loop()
   if (game_over) {
     Serial.println("Game Over");
 
-    byte sad_face[] = {
+    const byte sad_face[] = {
       0b00000000,
       0b00100100,
       0b00100100,
