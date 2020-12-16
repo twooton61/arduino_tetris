@@ -41,7 +41,6 @@ Tetris::Board tetris_board(robo_matrix);
 
 bool game_over = false;
 
-
 int period = 300;
 unsigned long time_now = 0;
 
@@ -73,44 +72,7 @@ void setup()
 
 void loop()
 {
-  if (game_over) {
-    Serial.println("Game Over");
 
-    byte sad_face[] = {
-      0b00000000,
-      0b00100100,
-      0b00100100,
-      0b00000000,
-      0b00111100,
-      0b01000010,
-      0b01000010,
-      0b00000000
-    };
-
-    tetris_board.draw(sad_face, sizeof(sad_face), Tetris::Board::ROWS);
-
-    delay(1000);
-    return;
-  }
-
-  if (active_peice == NULL) {
-    if (next_peice != NULL) {
-      tetris_board.clear_peice_unbounded(*next_peice);
-      active_peice = next_peice;
-      next_peice = NULL;
-    }
-    else {
-      active_peice = tetris_board.generate_new_peice(0, Tetris::Board::ROWS);
-    }
-  }
-
-  if (next_peice == NULL) {
-    next_peice = tetris_board.generate_new_peice(0, Tetris::Board::ROWS + 2);
-
-    tetris_board.draw_peice_unbounded(*next_peice);
-  }
-
-  Tetris::Peice& peice = *active_peice;
 
   if (robo_ir_receiver.detect_signal()) {
     Log::println("signal detected");
@@ -120,6 +82,43 @@ void loop()
 
   if (millis() >= time_now + period){
     time_now += period;
+
+    if (game_over) {
+      Serial.println("Game Over");
+
+      byte sad_face[] = {
+        0b00000000,
+        0b00100100,
+        0b00100100,
+        0b00000000,
+        0b00111100,
+        0b01000010,
+        0b01000010,
+        0b00000000
+      };
+
+      tetris_board.draw(sad_face, sizeof(sad_face), Tetris::Board::ROWS);
+
+      delay(1000);
+      return;
+    }
+
+    if (active_peice == NULL) {
+      if (next_peice != NULL) {
+        tetris_board.clear_peice_unbounded(*next_peice);
+        active_peice = next_peice;
+        next_peice = NULL;
+      }
+      else {
+        active_peice = tetris_board.generate_new_peice(0, Tetris::Board::ROWS);
+      }
+    }
+
+    if (next_peice == NULL) {
+      next_peice = tetris_board.generate_new_peice(0, Tetris::Board::ROWS + 2);
+
+      tetris_board.draw_peice_unbounded(*next_peice);
+    }
 
     if (active_peice != NULL) {
       tetris_board.clear_peice(*active_peice);
@@ -135,7 +134,7 @@ void loop()
       bool drop_more = true;
       if (down_button.is_pressed()) {
         int y_drop = 1;
-        while (active_peice->y() - y_drop >= 0 && !tetris_board.peice_will_collide_with_dot_pile(peice, y_drop)){
+        while (active_peice->y() - y_drop >= 0 && !tetris_board.peice_will_collide_with_dot_pile(*active_peice, y_drop)){
           y_drop++;
         }
 
@@ -150,7 +149,7 @@ void loop()
 
       bool peice_commited_to_dot_pile = false;
       if (active_peice->y() > 0){
-        if (tetris_board.peice_will_collide_with_dot_pile(peice, 1)){
+        if (tetris_board.peice_will_collide_with_dot_pile(*active_peice, 1)){
 
           if (active_peice->y() >= Tetris::Board::ROWS - 1) {
             game_over = true;

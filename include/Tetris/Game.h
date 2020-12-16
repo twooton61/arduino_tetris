@@ -118,7 +118,6 @@ void clear_peice_unbounded(const Tetris::Peice& peice)
 
   for (int y = peice.y(); y < (peice.y() + peice.height()) && y < (COLS * 4); ++y) {
     for (int x = peice.x(); x < (peice.x() + peice.width()) && x < COLS; ++x) {
-      Serial.println(x);
       m_robo_matrix.set_led_on(x, y, false);
     }
   }
