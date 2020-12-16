@@ -3,6 +3,13 @@
 
 #include <Helpers.h>
 #include <Tetris/Peice.h>
+#include <Tetris/IPeice.h>
+#include <Tetris/JPeice.h>
+#include <Tetris/LPeice.h>
+#include <Tetris/SPeice.h>
+#include <Tetris/SquarePeice.h>
+#include <Tetris/TPeice.h>
+#include <Tetris/ZPeice.h>
 #include <Robo/Matrix.h>
 
 namespace Tetris
@@ -10,17 +17,13 @@ namespace Tetris
 class Board
 {
 
-
-
-Robo::Matrix& robo_matrix;
-
 public:
 
 static const int LEDS_TO_USE_FOR_BOARD = 3;
 static const int LED_COLS_PER_MATRIX = 8;
 static const int LED_ROWS_PER_MATRIX = 8;
-static const int BOARD_COLS = LED_COLS_PER_MATRIX;
-static const int BOARD_ROWS = LEDS_TO_USE_FOR_BOARD * LED_ROWS_PER_MATRIX;
+static const int COLS = LED_COLS_PER_MATRIX;
+static const int ROWS = LEDS_TO_USE_FOR_BOARD * LED_ROWS_PER_MATRIX;
 
 
 explicit Board(Robo::Matrix& robo_matrix) :
@@ -31,8 +34,8 @@ explicit Board(Robo::Matrix& robo_matrix) :
 
 bool peice_will_collide_with_dot_pile(Tetris::Peice& peice, int y_drop)
 {
-  for (int y = peice.next_y(y_drop); y < (peice.next_y(y_drop) + peice.height()) && y < BOARD_ROWS; ++y) {
-    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < BOARD_COLS; ++x) {
+  for (int y = peice.next_y(y_drop); y < (peice.next_y(y_drop) + peice.height()) && y < ROWS; ++y) {
+    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < COLS; ++x) {
       if (peice.hits_shape(y - peice.next_y(y_drop), x - peice.x())) {
         const byte row_value = dot_pile[y];
 
@@ -46,14 +49,12 @@ bool peice_will_collide_with_dot_pile(Tetris::Peice& peice, int y_drop)
   return false;
 }
 
-void commit_peice_to_dot_pile(Tetris::Peice** peice_ptr)
+void commit_peice_to_dot_pile(Tetris::Peice& peice)
 {
-  Tetris::Peice& peice = **peice_ptr;
-  for (int y = peice.y(); y < (peice.y() + peice.height()) && y < BOARD_ROWS; ++y) {
-    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < BOARD_COLS; ++x) {
+  for (int y = peice.y(); y < (peice.y() + peice.height()) && y < ROWS; ++y) {
+    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < COLS; ++x) {
       if (peice.hits_shape(y - peice.y(), x - peice.x())) {
-        if (y >= BOARD_ROWS) {
-          // TODO game_over = true;
+        if (y >= ROWS) {
           return;
         }
 
@@ -61,18 +62,14 @@ void commit_peice_to_dot_pile(Tetris::Peice** peice_ptr)
       }
     }
   }
-
-  // clear_peice(peice);
-
-
 }
 
 void draw_dot_pile()
 {
-  for (int y = 0; y < BOARD_ROWS; ++y) {
+  for (int y = 0; y < ROWS; ++y) {
     bool row_has_dot = false;
 
-    for (int x = 0; x < BOARD_COLS; ++x) {
+    for (int x = 0; x < COLS; ++x) {
       const byte col = dot_pile[y];
 
       // if bit is set on column
@@ -93,7 +90,7 @@ void draw_dot_pile()
 void draw(byte* shape, const int size, const int y_offset = 0)
 {
   for (int y = 0; y < size; ++y) {
-    for (int x = 0; x < BOARD_COLS; ++x) {
+    for (int x = 0; x < COLS; ++x) {
       const byte col = shape[size - y - 1];
 
       // if bit is set on column
@@ -109,8 +106,8 @@ void clear_peice(const Tetris::Peice& peice)
     return;
   }
 
-  for (int y = peice.y(); y < (peice.y() + peice.height()) && y < BOARD_ROWS; ++y) {
-    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < BOARD_COLS; ++x) {
+  for (int y = peice.y(); y < (peice.y() + peice.height()) && y < ROWS; ++y) {
+    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < COLS; ++x) {
       robo_matrix.set_led_on(x, y, false);
     }
   }
@@ -122,8 +119,8 @@ void clear_peice_unbounded(const Tetris::Peice& peice)
     return;
   }
 
-  for (int y = peice.y(); y < (peice.y() + peice.height()) && y < (BOARD_COLS * 4); ++y) {
-    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < BOARD_COLS; ++x) {
+  for (int y = peice.y(); y < (peice.y() + peice.height()) && y < (COLS * 4); ++y) {
+    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < COLS; ++x) {
       robo_matrix.set_led_on(x, y, false);
     }
   }
@@ -131,8 +128,8 @@ void clear_peice_unbounded(const Tetris::Peice& peice)
 
 void draw_peice(const Tetris::Peice& peice)
 {
-  for (int y = peice.y(); y < (peice.y() + peice.height()) && y < BOARD_ROWS; ++y) {
-    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < BOARD_COLS; ++x) {
+  for (int y = peice.y(); y < (peice.y() + peice.height()) && y < ROWS; ++y) {
+    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < COLS; ++x) {
       if (peice.hits_shape(y - peice.y(), x - peice.x())) {
         robo_matrix.set_led_on(x, y, true);
       }
@@ -142,8 +139,8 @@ void draw_peice(const Tetris::Peice& peice)
 
 void draw_peice_unbounded(const Tetris::Peice& peice)
 {
-  for (int y = peice.y(); y < (peice.y() + peice.height()) && y < (BOARD_COLS * 4); ++y) {
-    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < BOARD_COLS; ++x) {
+  for (int y = peice.y(); y < (peice.y() + peice.height()) && y < (COLS * 4); ++y) {
+    for (int x = peice.x(); x < (peice.x() + peice.width()) && x < COLS; ++x) {
       if (peice.hits_shape(y - peice.y(), x - peice.x())) {
         robo_matrix.set_led_on(x, y, true);
       }
@@ -151,15 +148,49 @@ void draw_peice_unbounded(const Tetris::Peice& peice)
   }
 }
 
+Tetris::Peice* generate_new_peice() const
+{
+  static const int TOTAL_POSSIBLE_PEICES = 7;
+  const int peice_index = random(0, TOTAL_POSSIBLE_PEICES - 1);
+
+  Tetris::Peice* peice =  NULL;
+  switch (peice_index){
+    case 0:
+      peice = new Tetris::SquarePeice(0, 0);
+      break;
+    case 1:
+      peice = new Tetris::IPeice(0, 0);
+      break;
+    case 2:
+      peice = new Tetris::JPeice(0, 0);
+      break;
+    case 3:
+      peice = new Tetris::LPeice(0, 0);
+      break;
+    case 4:
+      peice = new Tetris::SPeice(0, 0);
+      break;
+    case 5:
+      peice = new Tetris::TPeice(0, 0);
+      break;
+    case 6:
+      peice = new Tetris::ZPeice(0, 0);
+      break;
+  }
+
+  return peice;
+}
+
 private:
 // upside down
-byte dot_pile[BOARD_ROWS] = {
+byte dot_pile[ROWS] = {
   0b11000111,
   0b11000101,
   0b10000101,
   0b10000101
 };
 
+Robo::Matrix& robo_matrix;
 };
 }  // namespace Tetris
 

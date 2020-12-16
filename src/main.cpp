@@ -12,13 +12,6 @@
 #include <Robo/IRReceiver.h>
 #include <Robo/Button.h>
 #include <Tetris/Game.h>
-#include <Tetris/IPeice.h>
-#include <Tetris/JPeice.h>
-#include <Tetris/LPeice.h>
-#include <Tetris/SPeice.h>
-#include <Tetris/SquarePeice.h>
-#include <Tetris/TPeice.h>
-#include <Tetris/ZPeice.h>
 
 #ifdef ROBO_DEBUGGER
 #include <avr8-stub.h>
@@ -75,7 +68,7 @@ void setup()
     0b11111111
   };
 
-  tetris_board.draw(screen, sizeof(screen), Tetris::Board::BOARD_ROWS);
+  tetris_board.draw(screen, sizeof(screen), Tetris::Board::ROWS);
 }
 
 void loop()
@@ -94,7 +87,7 @@ void loop()
       0b00000000
     };
 
-    tetris_board.draw(sad_face, sizeof(sad_face), Tetris::Board::BOARD_ROWS);
+    tetris_board.draw(sad_face, sizeof(sad_face), Tetris::Board::ROWS);
 
     delay(1000);
     return;
@@ -111,25 +104,25 @@ void loop()
       const int peice_index = random(0, TOTAL_POSSIBLE_PEICES - 1);
       switch (peice_index){
         case 0:
-          active_peice = new Tetris::SquarePeice(0, Tetris::Board:: BOARD_ROWS);
+          active_peice = new Tetris::SquarePeice(0, Tetris::Board::ROWS);
           break;
         case 1:
-          active_peice = new Tetris::IPeice(0, Tetris::Board:: BOARD_ROWS);
+          active_peice = new Tetris::IPeice(0, Tetris::Board::ROWS);
           break;
         case 2:
-          active_peice = new Tetris::JPeice(0, Tetris::Board:: BOARD_ROWS);
+          active_peice = new Tetris::JPeice(0, Tetris::Board::ROWS);
           break;
         case 3:
-          active_peice = new Tetris::LPeice(0, Tetris::Board:: BOARD_ROWS);
+          active_peice = new Tetris::LPeice(0, Tetris::Board::ROWS);
           break;
         case 4:
-          active_peice = new Tetris::SPeice(0, Tetris::Board:: BOARD_ROWS);
+          active_peice = new Tetris::SPeice(0, Tetris::Board::ROWS);
           break;
         case 5:
-          active_peice = new Tetris::TPeice(0, Tetris::Board:: BOARD_ROWS);
+          active_peice = new Tetris::TPeice(0, Tetris::Board::ROWS);
           break;
         case 6:
-          active_peice = new Tetris::ZPeice(0, Tetris::Board:: BOARD_ROWS);
+          active_peice = new Tetris::ZPeice(0, Tetris::Board::ROWS);
           break;
       }
     }
@@ -140,25 +133,25 @@ void loop()
     const int peice_index = random(0, TOTAL_POSSIBLE_PEICES - 1);
     switch (peice_index){
       case 0:
-        next_peice = new Tetris::SquarePeice(0, Tetris::Board:: BOARD_ROWS + 2);
+        next_peice = new Tetris::SquarePeice(0, Tetris::Board::ROWS + 2);
         break;
       case 1:
-        next_peice = new Tetris::IPeice(0, Tetris::Board:: BOARD_ROWS + 2);
+        next_peice = new Tetris::IPeice(0, Tetris::Board::ROWS + 2);
         break;
       case 2:
-        next_peice = new Tetris::JPeice(0, Tetris::Board:: BOARD_ROWS + 2);
+        next_peice = new Tetris::JPeice(0, Tetris::Board::ROWS + 2);
         break;
       case 3:
-        next_peice = new Tetris::LPeice(0, Tetris::Board:: BOARD_ROWS + 2);
+        next_peice = new Tetris::LPeice(0, Tetris::Board::ROWS + 2);
         break;
       case 4:
-        next_peice = new Tetris::SPeice(0, Tetris::Board:: BOARD_ROWS + 2);
+        next_peice = new Tetris::SPeice(0, Tetris::Board::ROWS + 2);
         break;
       case 5:
-        next_peice = new Tetris::TPeice(0, Tetris::Board:: BOARD_ROWS + 2);
+        next_peice = new Tetris::TPeice(0, Tetris::Board::ROWS + 2);
         break;
       case 6:
-        next_peice = new Tetris::ZPeice(0, Tetris::Board:: BOARD_ROWS + 2);
+        next_peice = new Tetris::ZPeice(0, Tetris::Board::ROWS + 2);
         break;
     }
 
@@ -203,19 +196,16 @@ void loop()
         active_peice->rotate();
       }
 
-      bool peice_commited = false;
+      bool peice_commited_to_dot_pile = false;
       if (active_peice->y() > 0){
         if (tetris_board.peice_will_collide_with_dot_pile(peice, 1)){
 
-          if (active_peice->y() >= Tetris::Board:: BOARD_ROWS - 1) {
+          if (active_peice->y() >= Tetris::Board::ROWS - 1) {
             game_over = true;
           }
 
-          tetris_board.commit_peice_to_dot_pile(&active_peice);
-
-          delete active_peice;
-          active_peice = NULL;
-                  peice_commited = true;
+          tetris_board.commit_peice_to_dot_pile(*active_peice);
+          peice_commited_to_dot_pile = true;
         }
         else if (drop_more) {
           active_peice->y(active_peice->y() - 1);
@@ -223,13 +213,15 @@ void loop()
       }
       else {
         // row hit bottom
-        tetris_board.commit_peice_to_dot_pile(&active_peice);
-        peice_commited = true;
-          delete active_peice;
-          active_peice = NULL;
+        tetris_board.commit_peice_to_dot_pile(*active_peice);
+        peice_commited_to_dot_pile = true;
       }
 
-      if (!peice_commited) {
+      if (peice_commited_to_dot_pile) {
+        delete active_peice;
+        active_peice = NULL;
+      }
+      else {
         tetris_board.draw_peice(*active_peice);
       }
     }
