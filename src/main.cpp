@@ -41,8 +41,8 @@ Tetris::Board tetris_board(robo_matrix);
 
 bool game_over = false;
 
-int period = 300;
-unsigned long time_now = 0;
+static const int TICK_INTERVAL = 300;
+unsigned long last_tick = 0;
 
 void setup()
 {
@@ -80,104 +80,105 @@ void loop()
     robo_ir_receiver.resume();
   }
 
-  if (millis() >= time_now + period){
-    time_now += period;
+  if (millis() < last_tick + TICK_INTERVAL){
+    return;
+  }
+  last_tick += TICK_INTERVAL;
 
-    if (game_over) {
-      Serial.println("Game Over");
+  if (game_over) {
+    Serial.println("Game Over");
 
-      byte sad_face[] = {
-        0b00000000,
-        0b00100100,
-        0b00100100,
-        0b00000000,
-        0b00111100,
-        0b01000010,
-        0b01000010,
-        0b00000000
-      };
+    byte sad_face[] = {
+      0b00000000,
+      0b00100100,
+      0b00100100,
+      0b00000000,
+      0b00111100,
+      0b01000010,
+      0b01000010,
+      0b00000000
+    };
 
-      tetris_board.draw(sad_face, sizeof(sad_face), Tetris::Board::ROWS);
+    tetris_board.draw(sad_face, sizeof(sad_face), Tetris::Board::ROWS);
 
-      delay(1000);
-      return;
+    delay(1000);
+    return;
+  }
+
+  if (active_peice == NULL) {
+    if (next_peice != NULL) {
+      tetris_board.clear_peice_unbounded(*next_peice);
+      active_peice = next_peice;
+      next_peice = NULL;
+    }
+    else {
+      active_peice = tetris_board.generate_new_peice(0, Tetris::Board::ROWS);
+    }
+  }
+
+  if (next_peice == NULL) {
+    next_peice = tetris_board.generate_new_peice(0, Tetris::Board::ROWS + 2);
+
+    tetris_board.draw_peice_unbounded(*next_peice);
+  }
+
+  if (active_peice != NULL) {
+    tetris_board.clear_peice(*active_peice);
+
+    if (right_button.is_pressed()) {
+      active_peice->move_x(1);
     }
 
-    if (active_peice == NULL) {
-      if (next_peice != NULL) {
-        tetris_board.clear_peice_unbounded(*next_peice);
-        active_peice = next_peice;
-        next_peice = NULL;
-      }
-      else {
-        active_peice = tetris_board.generate_new_peice(0, Tetris::Board::ROWS);
-      }
+    if (active_peice->x() != 0 && left_button.is_pressed()) {
+      active_peice->move_x(-1);
     }
 
-    if (next_peice == NULL) {
-      next_peice = tetris_board.generate_new_peice(0, Tetris::Board::ROWS + 2);
+    bool drop_more = true;
+    if (down_button.is_pressed()) {
+      int y_drop = 1;
+      while (active_peice->y() - y_drop >= 0 && !tetris_board.peice_will_collide_with_dot_pile(*active_peice, y_drop)){
+        y_drop++;
+      }
 
-      tetris_board.draw_peice_unbounded(*next_peice);
+      active_peice->y(active_peice->y() - (y_drop - 1));
+
+      drop_more = false;
     }
 
-    if (active_peice != NULL) {
-      tetris_board.clear_peice(*active_peice);
+    if (up_button.is_pressed()) {
+      active_peice->rotate();
+    }
 
-      if (right_button.is_pressed()) {
-        active_peice->move_x(1);
-      }
+    bool peice_commited_to_dot_pile = false;
+    if (active_peice->y() > 0){
+      if (tetris_board.peice_will_collide_with_dot_pile(*active_peice, 1)){
 
-      if (active_peice->x() != 0 && left_button.is_pressed()) {
-        active_peice->move_x(-1);
-      }
-
-      bool drop_more = true;
-      if (down_button.is_pressed()) {
-        int y_drop = 1;
-        while (active_peice->y() - y_drop >= 0 && !tetris_board.peice_will_collide_with_dot_pile(*active_peice, y_drop)){
-          y_drop++;
+        if (active_peice->y() >= Tetris::Board::ROWS - 1) {
+          game_over = true;
         }
 
-        active_peice->y(active_peice->y() - (y_drop - 1));
-
-        drop_more = false;
-      }
-
-      if (up_button.is_pressed()) {
-        active_peice->rotate();
-      }
-
-      bool peice_commited_to_dot_pile = false;
-      if (active_peice->y() > 0){
-        if (tetris_board.peice_will_collide_with_dot_pile(*active_peice, 1)){
-
-          if (active_peice->y() >= Tetris::Board::ROWS - 1) {
-            game_over = true;
-          }
-
-          tetris_board.commit_peice_to_dot_pile(*active_peice);
-          peice_commited_to_dot_pile = true;
-        }
-        else if (drop_more) {
-          active_peice->move_y(-1);
-        }
-      }
-      else {
-        // row hit bottom
         tetris_board.commit_peice_to_dot_pile(*active_peice);
         peice_commited_to_dot_pile = true;
       }
-
-      if (peice_commited_to_dot_pile) {
-        delete active_peice;
-        active_peice = NULL;
-      }
-      else {
-        tetris_board.draw_peice(*active_peice);
+      else if (drop_more) {
+        active_peice->move_y(-1);
       }
     }
+    else {
+      // row hit bottom
+      tetris_board.commit_peice_to_dot_pile(*active_peice);
+      peice_commited_to_dot_pile = true;
+    }
 
-    tetris_board.draw_dot_pile();
+    if (peice_commited_to_dot_pile) {
+      delete active_peice;
+      active_peice = NULL;
+    }
+    else {
+      tetris_board.draw_peice(*active_peice);
+    }
   }
+
+  tetris_board.draw_dot_pile();
 }
 
