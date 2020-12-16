@@ -1,35 +1,13 @@
-#ifndef TETRIS_BOARD_H_
-#define TETRIS_BOARD_H_
-
-#include <Helpers.h>
-#include <Tetris/Peice.h>
-#include <Tetris/IPeice.h>
-#include <Tetris/JPeice.h>
-#include <Tetris/LPeice.h>
-#include <Tetris/SPeice.h>
-#include <Tetris/SquarePeice.h>
-#include <Tetris/TPeice.h>
-#include <Tetris/ZPeice.h>
-#include <Robo/Matrix.h>
+#include <Tetris/Board.h>
 
 namespace Tetris
 {
-class Board
-{
-public:
-
-static const int LEDS_TO_USE_FOR_BOARD = 3;
-static const int LED_COLS_PER_MATRIX = 8;
-static const int LED_ROWS_PER_MATRIX = 8;
-static const int COLS = LED_COLS_PER_MATRIX;
-static const int ROWS = LEDS_TO_USE_FOR_BOARD * LED_ROWS_PER_MATRIX;
-
-explicit Board(Robo::Matrix& robo_matrix) :
+Board::Board(Robo::Matrix& robo_matrix) :
   m_robo_matrix(robo_matrix)
 {
 }
 
-bool peice_will_collide_with_dot_pile(Tetris::Peice& peice, int y_drop)
+bool Board::peice_will_collide_with_dot_pile(Tetris::Peice& peice, int y_drop)
 {
   for (int y = peice.next_y(y_drop); y < (peice.next_y(y_drop) + peice.height()) && y < ROWS; ++y) {
     for (int x = peice.x(); x < (peice.x() + peice.width()) && x < COLS; ++x) {
@@ -46,7 +24,7 @@ bool peice_will_collide_with_dot_pile(Tetris::Peice& peice, int y_drop)
   return false;
 }
 
-void commit_peice_to_dot_pile(Tetris::Peice& peice)
+void Board::commit_peice_to_dot_pile(Tetris::Peice& peice)
 {
   for (int y = peice.y(); y < (peice.y() + peice.height()) && y < ROWS; ++y) {
     for (int x = peice.x(); x < (peice.x() + peice.width()) && x < COLS; ++x) {
@@ -61,7 +39,7 @@ void commit_peice_to_dot_pile(Tetris::Peice& peice)
   }
 }
 
-void draw_dot_pile()
+void Board::draw_dot_pile()
 {
   for (int y = 0; y < ROWS; ++y) {
     bool row_has_dot = false;
@@ -84,7 +62,7 @@ void draw_dot_pile()
   }
 }
 
-void draw(byte* shape, const int size, const int y_offset = 0)
+void Board::draw(byte* shape, const int size, const int y_offset = 0)
 {
   for (int y = 0; y < size; ++y) {
     for (int x = 0; x < COLS; ++x) {
@@ -97,7 +75,7 @@ void draw(byte* shape, const int size, const int y_offset = 0)
   }
 }
 
-void clear_peice(const Tetris::Peice& peice)
+void Board::clear_peice(const Tetris::Peice& peice)
 {
   if (peice.y() < 0) {
     return;
@@ -110,7 +88,7 @@ void clear_peice(const Tetris::Peice& peice)
   }
 }
 
-void clear_peice_unbounded(const Tetris::Peice& peice)
+void Board::clear_peice_unbounded(const Tetris::Peice& peice)
 {
   if (peice.y() < 0) {
     return;
@@ -123,7 +101,7 @@ void clear_peice_unbounded(const Tetris::Peice& peice)
   }
 }
 
-void draw_peice(const Tetris::Peice& peice)
+void Board::draw_peice(const Tetris::Peice& peice)
 {
   for (int y = peice.y(); y < (peice.y() + peice.height()) && y < ROWS; ++y) {
     for (int x = peice.x(); x < (peice.x() + peice.width()) && x < COLS; ++x) {
@@ -134,7 +112,7 @@ void draw_peice(const Tetris::Peice& peice)
   }
 }
 
-void draw_peice_unbounded(const Tetris::Peice& peice)
+void Board::draw_peice_unbounded(const Tetris::Peice& peice)
 {
   for (int y = peice.y(); y < (peice.y() + peice.height()) && y < (COLS * 4); ++y) {
     for (int x = peice.x(); x < (peice.x() + peice.width()) && x < COLS; ++x) {
@@ -145,7 +123,7 @@ void draw_peice_unbounded(const Tetris::Peice& peice)
   }
 }
 
-Tetris::Peice* generate_new_peice(const int x, const int y) const
+Tetris::Peice* Board::generate_new_peice(const int x, const int y) const
 {
   static const int TOTAL_POSSIBLE_PEICES = 7;
   const int peice_index = random(0, TOTAL_POSSIBLE_PEICES - 1);
@@ -177,18 +155,4 @@ Tetris::Peice* generate_new_peice(const int x, const int y) const
 
   return new_peice;
 }
-
-private:
-// upside down
-byte m_dot_pile[ROWS] = {
-  0b11000111,
-  0b11000101,
-  0b10000101,
-  0b10000101
-};
-
-Robo::Matrix& m_robo_matrix;
-};
 }  // namespace Tetris
-
-#endif  // TETRIS_BOARD_H_

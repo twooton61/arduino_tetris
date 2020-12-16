@@ -11,7 +11,7 @@
 #include <Robo/Matrix.h>
 #include <Robo/IRReceiver.h>
 #include <Robo/Button.h>
-#include <Tetris/Game.h>
+#include <Tetris/Board.h>
 
 #ifdef ROBO_DEBUGGER
 #include <avr8-stub.h>
