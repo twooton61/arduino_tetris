@@ -23,7 +23,16 @@ public:
   }
 
   GET_SET(int, x)
+  void move_x(const int movement)
+  {
+    x(x() + movement);
+  }
+
   GET_SET(int, y)
+  void move_y(const int movement)
+  {
+    y(y() + movement);
+  }
 
   int next_y(const int y_drop = 1) const
   {

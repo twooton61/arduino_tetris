@@ -125,11 +125,11 @@ void loop()
       tetris_board.clear_peice(*active_peice);
 
       if (right_button.is_pressed()) {
-        active_peice->x(active_peice->x() + 1);
+        active_peice->move_x(1);
       }
 
       if (active_peice->x() != 0 && left_button.is_pressed()) {
-        active_peice->x(active_peice->x() - 1);
+        active_peice->move_x(-1);
       }
 
       bool drop_more = true;
@@ -160,7 +160,7 @@ void loop()
           peice_commited_to_dot_pile = true;
         }
         else if (drop_more) {
-          active_peice->y(active_peice->y() - 1);
+          active_peice->move_y(-1);
         }
       }
       else {
