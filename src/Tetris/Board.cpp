@@ -79,6 +79,10 @@ void Board::draw_dot_pile()
     // bool row_has_dot = false;
 
     const byte row = m_dot_pile[y];
+    if (row == 0b00000000) {
+      break;
+    }
+
     for (int x = 0; x < COLS; ++x) {
 
       // if bit is set on column
