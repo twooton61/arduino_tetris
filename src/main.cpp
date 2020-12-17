@@ -99,7 +99,7 @@ void loop()
 
     tetris_board.draw(sad_face, sizeof(sad_face), Tetris::Board::ROWS);
 
-    delay(1000);
+    delay(100000);
     return;
   }
 
@@ -172,7 +172,8 @@ void loop()
       delete active_peice;
       active_peice = NULL;
 
-      // tetris_board.compact_dot_pile();
+      tetris_board.compact_dot_pile();
+      tetris_board.clear_board();
     }
     else {
       tetris_board.draw_peice(*active_peice);

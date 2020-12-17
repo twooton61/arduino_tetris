@@ -27,6 +27,7 @@ static const int ROWS = LEDS_TO_USE_FOR_BOARD * LED_ROWS_PER_MATRIX;
 explicit Board(Robo::Matrix& robo_matrix);
 bool peice_will_collide_with_dot_pile(Peice& peice, int y_drop);
 void commit_peice_to_dot_pile(Peice& peice);
+void clear_board();
 void compact_dot_pile();
 void draw_dot_pile();
 void draw(const byte* const shape, const int size, const int y_offset = 0);

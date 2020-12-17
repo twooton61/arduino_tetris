@@ -39,40 +39,57 @@ void Board::commit_peice_to_dot_pile(Tetris::Peice& peice)
   }
 }
 
-void Board::compact_dot_pile()
+void Board::clear_board()
 {
   for (int y = 0; y < ROWS; ++y) {
-    Serial.println("compacting");
-    m_dot_pile[y] = 0;
-  //   m
-  //   for (int x = 0; x < COLS; ++x) {
-  //     if (row == 0b11111111) {
-  //       m_dot_pile[y] |= 1 << (7 - x);
-  //     }
-  //   }
+    for (int x = 0; x < COLS; ++x) {
+      m_robo_matrix.set_led_on(x, y, false);
+    }
+  }
+}
+
+void Board::compact_dot_pile()
+{
+  Serial.println("compacting");
+
+  for (int y = 0; y < ROWS; ++y) {
+    const byte row = m_dot_pile[y];
+    if (row == 0b11111111) {
+
+      for (int z = y; z < ROWS; ++z){
+        const byte row_to_pull = m_dot_pile[z + 1];
+        if (row_to_pull == 0b00000000) {
+          m_dot_pile[z] = 0b00000000;
+          break;
+        }
+        m_dot_pile[z] = row_to_pull;
+      }
+
+      y = 0;
+    }
+    else if (row == 0b00000000) {
+      break;
+    }
   }
 }
 
 void Board::draw_dot_pile()
 {
   for (int y = 0; y < ROWS; ++y) {
-    bool row_has_dot = false;
+    // bool row_has_dot = false;
 
+    const byte row = m_dot_pile[y];
     for (int x = 0; x < COLS; ++x) {
-      const byte col = m_dot_pile[y];
 
       // if bit is set on column
-      if (col & (1 << (7 - x))) {
-        m_robo_matrix.set_led_on(x, y, true);
-
-        row_has_dot = true;
-      }
+      const bool is_set = (row & (1 << (7 - x)));
+      m_robo_matrix.set_led_on(x, y, is_set);
     }
 
     // if there are no dots on a single row of a pile, we can stop drawing up
-    if (!row_has_dot) {
-      break;
-    }
+    // if (!row_has_dot) {
+    //   break;
+    // }
   }
 }
 
