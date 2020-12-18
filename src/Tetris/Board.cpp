@@ -48,27 +48,34 @@ void Board::clear_board()
   }
 }
 
-void Board::compact_dot_pile()
+bool Board::clean_dot_pile()
 {
-  Serial.println("compacting");
+  bool cleaned = false;
+  Serial.println("cleaning");
 
   for (int y = 0; y < ROWS; ++y) {
     const byte row = m_dot_pile[y];
     if (row == 0b11111111) {
-
-      for (int z = y; z < ROWS; ++z){
-        const byte row_to_pull = m_dot_pile[z + 1];
-        if (row_to_pull == 0b00000000) {
-          m_dot_pile[z] = 0b00000000;
-          break;
-        }
-        m_dot_pile[z] = row_to_pull;
-      }
-
-      y = 0;
+      m_dot_pile[y] = 0b00000000;
+      cleaned = true;
     }
     else if (row == 0b00000000) {
       break;
+    }
+  }
+
+  return cleaned;
+}
+
+void Board::compact_dot_pile()
+{
+  for (int y = 0; y < ROWS; ++y) {
+    const byte row = m_dot_pile[y];
+    if (row == 0b00000000) {
+      for (int z = y; z < ROWS; ++z){
+        const byte row_to_pull = z == (ROWS - 1) ? 0b00000000 : m_dot_pile[z + 1];
+        m_dot_pile[z] = row_to_pull;
+      }
     }
   }
 }
@@ -76,24 +83,12 @@ void Board::compact_dot_pile()
 void Board::draw_dot_pile()
 {
   for (int y = 0; y < ROWS; ++y) {
-    // bool row_has_dot = false;
-
     const byte row = m_dot_pile[y];
-    if (row == 0b00000000) {
-      break;
-    }
-
     for (int x = 0; x < COLS; ++x) {
-
       // if bit is set on column
       const bool is_set = (row & (1 << (7 - x)));
       m_robo_matrix.set_led_on(x, y, is_set);
     }
-
-    // if there are no dots on a single row of a pile, we can stop drawing up
-    // if (!row_has_dot) {
-    //   break;
-    // }
   }
 }
 

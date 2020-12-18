@@ -172,8 +172,15 @@ void loop()
       delete active_peice;
       active_peice = NULL;
 
-      tetris_board.compact_dot_pile();
-      tetris_board.clear_board();
+      if (tetris_board.clean_dot_pile()){
+        tetris_board.clear_board();
+        tetris_board.draw_dot_pile();
+        delay(1000);
+        tetris_board.clear_board();
+        tetris_board.compact_dot_pile();
+        tetris_board.draw_dot_pile();
+        delay(1000);
+      }
     }
     else {
       tetris_board.draw_peice(*active_peice);
