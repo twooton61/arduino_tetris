@@ -23,6 +23,7 @@ public:
   boolean is_right_code(const IRCode ir_code) const;
   boolean is_up_code(const IRCode ir_code) const;
   boolean is_down_code(const IRCode ir_code) const;
+  boolean is_button_1_code(const IRCode ir_code) const;
   void resume();
 
 private:

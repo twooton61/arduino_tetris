@@ -72,12 +72,6 @@ void setup()
 
 void loop()
 {
-  if (robo_ir_receiver.detect_signal()) {
-    Log::println("signal detected");
-
-    robo_ir_receiver.resume();
-  }
-
   if (millis() < last_tick + TICK_INTERVAL){
     return;
   }
@@ -122,16 +116,24 @@ void loop()
 
   tetris_board.clear_peice(*active_peice);
 
-  if (right_button.is_pressed()) {
+  Robo::IRReceiver::IRCode ir_code = 0;
+  if (robo_ir_receiver.detect_signal()) {
+    Log::println("signal detected");
+    ir_code = robo_ir_receiver.get_ir_code();
+
+    robo_ir_receiver.resume();
+  }
+
+  if (robo_ir_receiver.is_right_code(ir_code) || right_button.is_pressed()) {
     active_peice->move_x(1);
   }
 
-  if (active_peice->x() != 0 && left_button.is_pressed()) {
+  if (active_peice->x() != 0 && (robo_ir_receiver.is_left_code(ir_code) || left_button.is_pressed())) {
     active_peice->move_x(-1);
   }
 
   bool drop_more = true;
-  if (down_button.is_pressed()) {
+  if (robo_ir_receiver.is_down_code(ir_code) || down_button.is_pressed()) {
     int y_drop = 1;
     while (active_peice->y() - y_drop >= 0 && !tetris_board.peice_will_collide_with_dot_pile(*active_peice, y_drop)){
       y_drop++;
@@ -142,7 +144,7 @@ void loop()
     drop_more = false;
   }
 
-  if (up_button.is_pressed()) {
+  if (robo_ir_receiver.is_button_1_code(ir_code) || up_button.is_pressed()) {
     active_peice->rotate();
   }
 

@@ -95,6 +95,19 @@ boolean IRReceiver::is_down_code(const IRCode ir_code) const
   return false;
 }
 
+boolean IRReceiver::is_button_1_code(const IRCode ir_code) const
+{
+  switch (ir_code) {
+    case 1217346747UL:
+      Log::println("button 1");
+
+      return true;
+      break;
+  }
+
+  return false;
+}
+
 void IRReceiver::resume()
 {
   m_ir_receiver.resume();
