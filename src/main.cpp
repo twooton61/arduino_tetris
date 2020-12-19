@@ -120,73 +120,71 @@ void loop()
     tetris_board.draw_peice_unbounded(*next_peice);
   }
 
-  if (active_peice != NULL) {
-    tetris_board.clear_peice(*active_peice);
+  tetris_board.clear_peice(*active_peice);
 
-    if (right_button.is_pressed()) {
-      active_peice->move_x(1);
+  if (right_button.is_pressed()) {
+    active_peice->move_x(1);
+  }
+
+  if (active_peice->x() != 0 && left_button.is_pressed()) {
+    active_peice->move_x(-1);
+  }
+
+  bool drop_more = true;
+  if (down_button.is_pressed()) {
+    int y_drop = 1;
+    while (active_peice->y() - y_drop >= 0 && !tetris_board.peice_will_collide_with_dot_pile(*active_peice, y_drop)){
+      y_drop++;
     }
 
-    if (active_peice->x() != 0 && left_button.is_pressed()) {
-      active_peice->move_x(-1);
-    }
+    active_peice->y(active_peice->y() - (y_drop - 1));
 
-    bool drop_more = true;
-    if (down_button.is_pressed()) {
-      int y_drop = 1;
-      while (active_peice->y() - y_drop >= 0 && !tetris_board.peice_will_collide_with_dot_pile(*active_peice, y_drop)){
-        y_drop++;
+    drop_more = false;
+  }
+
+  if (up_button.is_pressed()) {
+    active_peice->rotate();
+  }
+
+  bool peice_commited_to_dot_pile = false;
+  if (active_peice->y() > 0){
+    if (tetris_board.peice_will_collide_with_dot_pile(*active_peice, 1)){
+
+      if (active_peice->y() >= Tetris::Board::ROWS - 1) {
+        game_over = true;
       }
 
-      active_peice->y(active_peice->y() - (y_drop - 1));
-
-      drop_more = false;
-    }
-
-    if (up_button.is_pressed()) {
-      active_peice->rotate();
-    }
-
-    bool peice_commited_to_dot_pile = false;
-    if (active_peice->y() > 0){
-      if (tetris_board.peice_will_collide_with_dot_pile(*active_peice, 1)){
-
-        if (active_peice->y() >= Tetris::Board::ROWS - 1) {
-          game_over = true;
-        }
-
-        tetris_board.commit_peice_to_dot_pile(*active_peice);
-        peice_commited_to_dot_pile = true;
-      }
-      else if (drop_more) {
-        active_peice->move_y(-1);
-      }
-    }
-    else {
-      // row hit bottom
       tetris_board.commit_peice_to_dot_pile(*active_peice);
       peice_commited_to_dot_pile = true;
     }
-
-    if (peice_commited_to_dot_pile) {
-      delete active_peice;
-      active_peice = NULL;
-
-      if (tetris_board.clean_dot_pile()){
-        tetris_board.clear_board();
-        tetris_board.draw_dot_pile();
-        delay(1000);
-        tetris_board.clear_board();
-        tetris_board.compact_dot_pile();
-        tetris_board.draw_dot_pile();
-        delay(1000);
-      }
-    }
-    else {
-      tetris_board.draw_peice(*active_peice);
+    else if (drop_more) {
+      active_peice->move_y(-1);
     }
   }
+  else {
+    // row hit bottom
+    tetris_board.commit_peice_to_dot_pile(*active_peice);
+    peice_commited_to_dot_pile = true;
+  }
 
-  tetris_board.draw_dot_pile();
+  if (peice_commited_to_dot_pile) {
+    delete active_peice;
+    active_peice = NULL;
+
+    if (tetris_board.clean_dot_pile()){
+      tetris_board.clear_board();
+      tetris_board.draw_dot_pile(NULL);
+      delay(1000);
+      tetris_board.clear_board();
+      tetris_board.compact_dot_pile();
+      tetris_board.draw_dot_pile(NULL);
+      delay(1000);
+    }
+  }
+  else {
+    tetris_board.draw_peice(*active_peice);
+  }
+
+  tetris_board.draw_dot_pile(active_peice);
 }
 

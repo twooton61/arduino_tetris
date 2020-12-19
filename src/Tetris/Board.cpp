@@ -115,13 +115,16 @@ void Board::compact_dot_pile()
   Serial.println("Done compacting");
 }
 
-void Board::draw_dot_pile()
+void Board::draw_dot_pile(Tetris::Peice* const peice)
 {
   for (int y = 0; y < ROWS; ++y) {
     const byte row = m_dot_pile[y];
     for (int x = 0; x < COLS; ++x) {
       // if bit is set on column
       const bool is_set = (row & (1 << (7 - x)));
+      if (!is_set && peice != NULL && peice->hits_shape(y - peice->y(), x - peice->x())) {
+        continue;
+      }
       m_robo_matrix.set_led_on(x, y, is_set);
     }
   }
@@ -148,7 +151,9 @@ void Board::clear_peice(const Tetris::Peice& peice)
 
   for (int y = peice.y(); y < (peice.y() + peice.height()) && y < ROWS; ++y) {
     for (int x = peice.x(); x < (peice.x() + peice.width()) && x < COLS; ++x) {
-      m_robo_matrix.set_led_on(x, y, false);
+      if (peice.hits_shape(y - peice.y(), x - peice.x())) {
+        m_robo_matrix.set_led_on(x, y, false);
+      }
     }
   }
 }

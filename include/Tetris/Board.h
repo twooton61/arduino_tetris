@@ -30,7 +30,7 @@ void commit_peice_to_dot_pile(Peice& peice);
 void clear_board();
 bool clean_dot_pile();
 void compact_dot_pile();
-void draw_dot_pile();
+void draw_dot_pile(Tetris::Peice* const peice);
 void draw(const byte* const shape, const int size, const int y_offset = 0);
 void clear_peice(const Peice& peice);
 void clear_peice_unbounded(const Peice& peice);
