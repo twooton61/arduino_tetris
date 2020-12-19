@@ -55,11 +55,11 @@ bool Board::clean_dot_pile()
 
   for (int y = 0; y < ROWS; ++y) {
     const byte row = m_dot_pile[y];
-    if (row == 0b11111111) {
-      m_dot_pile[y] = 0b00000000;
+    if (row == FULL_ROW) {
+      m_dot_pile[y] = EMPTY_ROW;
       cleaned = true;
     }
-    else if (row == 0b00000000) {
+    else if (row == EMPTY_ROW) {
       break;
     }
   }
@@ -69,15 +69,50 @@ bool Board::clean_dot_pile()
 
 void Board::compact_dot_pile()
 {
+  // start at y = 0
   for (int y = 0; y < ROWS; ++y) {
     const byte row = m_dot_pile[y];
-    if (row == 0b00000000) {
-      for (int z = y; z < ROWS; ++z){
-        const byte row_to_pull = z == (ROWS - 1) ? 0b00000000 : m_dot_pile[z + 1];
+    // if you find a row that is blank...
+
+    // Serial.print("looking at row :");
+    // Serial.println(y);
+
+    if (row == EMPTY_ROW) {
+      // Serial.print("Row is empty:");
+      // Serial.println(y);
+
+      /// continue up until you find a solid row ..
+      int row_gap = 1;
+      while (m_dot_pile[y + row_gap] == EMPTY_ROW && y < ROWS) {
+        row_gap++;
+      }
+
+      // Serial.print("Row gap is :");
+      // Serial.println(row_gap);
+
+      for (int z = y; z < ROWS; ++z) {
+        const byte row_to_pull = (z + row_gap) >= (ROWS - 1) ? EMPTY_ROW : m_dot_pile[z + row_gap];
+        // Serial.print("Pulling row :");
+        // Serial.print(z + row_gap);
+        // Serial.print(" to ");
+        // Serial.print(z);
+
+
+        // Serial.print(" value: ");
+        // Serial.println(row_to_pull, BIN);
         m_dot_pile[z] = row_to_pull;
       }
+
+      // Serial.println("Resetting y");
+      // y = 0;
+      // Serial.println("Done pulling rows");
+
     }
+
+    // Serial.println("Looking at next row");
   }
+
+  Serial.println("Done compacting");
 }
 
 void Board::draw_dot_pile()

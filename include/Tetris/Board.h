@@ -41,13 +41,15 @@ Peice* generate_new_peice(const int x, const int y) const;
 private:
 // upside down
 byte m_dot_pile[ROWS] = {
-  0b11000111,
-  0b11000101,
-  0b10000101,
-  0b10000101
+  0b01111111,
+  0b01111111,
+  0b01010101,
+  0b01000101
 };
 
 Robo::Matrix& m_robo_matrix;
+static const byte EMPTY_ROW = 0b00000000;
+static const byte FULL_ROW = 0b11111111;
 };
 }  // namespace Tetris
 
