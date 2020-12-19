@@ -41,10 +41,10 @@ Peice* generate_new_peice(const int x, const int y) const;
 private:
 // upside down
 byte m_dot_pile[ROWS] = {
-  0b01111111,
-  0b01111111,
-  0b01010101,
-  0b01000101
+  0b01101011,
+  0b01000011,
+  0b00000001,
+  0b00000001
 };
 
 Robo::Matrix& m_robo_matrix;
